@@ -34,10 +34,8 @@ function db(): PDO
         if (!empty($GLOBALS['CORPOTH_CONFIG']['app']['debug'])) {
             throw $e;
         }
-        http_response_code(500);
         error_log('Corpoth DB error: ' . $e->getMessage());
-        echo '<h1>Veritabanına ulaşılamadı</h1>';
-        exit;
+        throw new RuntimeException('Veritabanina ulasilamadi.');
     }
 
     return $pdo;

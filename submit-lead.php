@@ -1,9 +1,13 @@
 <?php
-require_once __DIR__ . '/includes/bootstrap.php';
+/**
+ * Lead form endpoint. JSON response doner.
+ *
+ * Tum hatalari yakalar; client'a daima JSON doner, log dosyasina yazar.
+ */
 
+ini_set('display_errors', '0');
+error_reporting(E_ALL);
 header('Content-Type: application/json; charset=utf-8');
-
-$wantsJson = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
 function lead_response(bool $ok, string $message, array $extra = [], int $code = 200): void
 {
@@ -12,13 +16,30 @@ function lead_response(bool $ok, string $message, array $extra = [], int $code =
     exit;
 }
 
+// Tum fatal hatalari yakala (PDOException dahil)
+set_exception_handler(function (Throwable $e) {
+    error_log('[submit-lead] Uncaught: ' . $e->getMessage() . ' @ ' . $e->getFile() . ':' . $e->getLine());
+    lead_response(false, 'Sunucu hatasi olustu, lutfen birazdan tekrar deneyin.', [], 500);
+});
+set_error_handler(function ($severity, $message, $file, $line) {
+    if (!(error_reporting() & $severity)) return false;
+    throw new ErrorException($message, 0, $severity, $file, $line);
+});
+
+try {
+    require_once __DIR__ . '/includes/bootstrap.php';
+} catch (Throwable $e) {
+    error_log('[submit-lead] Bootstrap failed: ' . $e->getMessage());
+    lead_response(false, 'Yapilandirma hatasi.', [], 500);
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    lead_response(false, 'Geçersiz istek metodu.', [], 405);
+    lead_response(false, 'Gecersiz istek metodu.', [], 405);
 }
 
 // Honeypot
 if (!empty($_POST['website'])) {
-    lead_response(true, 'Teşekkürler.');
+    lead_response(true, 'Tesekkurler.');
 }
 
 $name    = trim((string) ($_POST['name']    ?? ''));
@@ -35,22 +56,24 @@ if ($name === '' || mb_strlen($name) > 190) {
     $errors['name'] = 'Ad Soyad zorunlu.';
 }
 if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    $errors['email'] = 'Geçerli bir e-posta adresi girin.';
+    $errors['email'] = 'Gecerli bir e-posta adresi girin.';
 }
 if ($company === '') {
-    $errors['company'] = 'Şirket bilgisi zorunlu.';
+    $errors['company'] = 'Sirket bilgisi zorunlu.';
 }
 if (!$kvkk) {
-    $errors['kvkk'] = 'KVKK onayı gereklidir.';
+    $errors['kvkk'] = 'KVKK onayi gereklidir.';
 }
 if (mb_strlen($message) > 5000) {
-    $errors['message'] = 'Mesaj çok uzun.';
+    $errors['message'] = 'Mesaj cok uzun.';
 }
 
 if ($errors) {
-    lead_response(false, 'Lütfen formdaki hataları düzeltin.', ['errors' => $errors], 422);
+    lead_response(false, 'Lutfen formdaki hatalari duzeltin.', ['errors' => $errors], 422);
 }
 
+// Kayit
+$leadId = 0;
 try {
     $leadId = lead_create([
         'name'            => $name,
@@ -60,34 +83,45 @@ try {
         'employees_range' => $emp,
         'position'        => $pos,
         'message'         => $message,
-        'ip'              => client_ip(),
+        'ip'              => function_exists('client_ip') ? client_ip() : null,
         'user_agent'      => mb_substr((string) ($_SERVER['HTTP_USER_AGENT'] ?? ''), 0, 500),
         'referer'         => mb_substr((string) ($_SERVER['HTTP_REFERER']    ?? ''), 0, 500),
     ]);
 } catch (Throwable $e) {
-    error_log('Lead create failed: ' . $e->getMessage());
-    lead_response(false, 'Bir hata oluştu, lütfen birazdan tekrar deneyin.', [], 500);
+    error_log('[submit-lead] DB insert failed: ' . $e->getMessage());
+    lead_response(false, 'Bir hata olustu, lutfen birazdan tekrar deneyin.', [], 500);
 }
 
-// Bildirim e-postasi (opsiyonel - mail() fonksiyonu kullanir)
-$notifyTo = setting('lead_notify_email', setting('contact_email'));
-if ($notifyTo) {
-    $subject = '[Corpoth] Yeni teklif talebi: ' . $name . ' (' . $company . ')';
-    $body  = "Yeni bir lead alindi.\n\n";
-    $body .= "Ad Soyad : $name\n";
-    $body .= "E-posta  : $email\n";
-    $body .= "Telefon  : $phone\n";
-    $body .= "Sirket   : $company\n";
-    $body .= "Calisan  : $emp\n";
-    $body .= "Pozisyon : $pos\n";
-    $body .= "Mesaj    : $message\n\n";
-    $body .= "Admin panel: " . rtrim(setting('canonical_url', ''), '/') . "/admin/leads.php\n";
+// Bildirim e-postasi (mail() yoksa veya disable ise sessizce gec)
+try {
+    $notifyTo = '';
+    if (function_exists('setting')) {
+        $notifyTo = setting('lead_notify_email', setting('contact_email'));
+    }
+    if ($notifyTo && function_exists('mail')) {
+        $subject = '[Corpoth] Yeni teklif talebi: ' . $name . ' (' . $company . ')';
+        $body  = "Yeni bir lead alindi.\n\n";
+        $body .= "Ad Soyad : $name\n";
+        $body .= "E-posta  : $email\n";
+        $body .= "Telefon  : $phone\n";
+        $body .= "Sirket   : $company\n";
+        $body .= "Calisan  : $emp\n";
+        $body .= "Pozisyon : $pos\n";
+        $body .= "Mesaj    : $message\n\n";
+        $body .= 'Admin panel: ' . rtrim((string) (function_exists('setting') ? setting('canonical_url', '') : ''), '/') . "/admin/leads.php\n";
 
-    $headers  = 'From: ' . ($GLOBALS['CORPOTH_CONFIG']['mail']['from_name'] ?? 'Corpoth') . ' <' . ($GLOBALS['CORPOTH_CONFIG']['mail']['from_email'] ?? 'no-reply@corpoth.com') . ">\r\n";
-    $headers .= 'Reply-To: ' . $email . "\r\n";
-    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+        $fromEmail = $GLOBALS['CORPOTH_CONFIG']['mail']['from_email'] ?? 'no-reply@corpoth.com';
+        $fromName  = $GLOBALS['CORPOTH_CONFIG']['mail']['from_name']  ?? 'Corpoth';
 
-    @mail($notifyTo, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, $headers);
+        $headers  = 'From: ' . $fromName . ' <' . $fromEmail . ">\r\n";
+        $headers .= 'Reply-To: ' . $email . "\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+
+        @mail($notifyTo, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, $headers);
+    }
+} catch (Throwable $e) {
+    error_log('[submit-lead] Mail send failed (non-fatal): ' . $e->getMessage());
 }
 
-lead_response(true, 'Teşekkürler! Talebiniz alındı, en kısa sürede dönüş yapacağız.', ['id' => $leadId]);
+lead_response(true, 'Tesekkurler! Talebiniz alindi, en kisa surede donus yapacagiz.', ['id' => $leadId]);

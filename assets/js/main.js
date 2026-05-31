@@ -1,9 +1,11 @@
 (() => {
   'use strict';
 
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   /* ========== Mobil menu ========== */
-  const navToggle = document.getElementById('nav-toggle');
-  const navIcon   = document.getElementById('nav-toggle-icon');
+  const navToggle  = document.getElementById('nav-toggle');
+  const navIcon    = document.getElementById('nav-toggle-icon');
   const mobileMenu = document.getElementById('mobile-menu');
 
   if (navToggle && mobileMenu) {
@@ -28,32 +30,141 @@
     const consent = localStorage.getItem(COOKIE_KEY);
     if (!consent) {
       banner.classList.remove('hidden');
-      requestAnimationFrame(() => banner.classList.add('is-shown'));
+      requestAnimationFrame(() => {
+        banner.classList.add('is-shown');
+        document.body.classList.add('cookie-visible');
+      });
     }
     const dismiss = (val) => {
       localStorage.setItem(COOKIE_KEY, val);
       banner.classList.remove('is-shown');
-      setTimeout(() => banner.classList.add('hidden'), 500);
+      document.body.classList.remove('cookie-visible');
+      setTimeout(() => banner.classList.add('hidden'), 600);
     };
     accept  && accept .addEventListener('click', () => dismiss('accepted'));
     decline && decline.addEventListener('click', () => dismiss('declined'));
   }
 
-  /* ========== Lead form (AJAX) ========== */
+  /* ========== Smooth scroll (custom easing) ==========
+     Hash-link tiklamalarini yakalayip kendi animasyonumuzla scroll'lariz.
+     Easing: easeOutQuart (basta hizli, sonda yavas). */
+  const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
+
+  const smoothScrollTo = (targetY, duration = 900) => {
+    if (reduceMotion) {
+      window.scrollTo(0, targetY);
+      return;
+    }
+    const startY  = window.pageYOffset;
+    const distance = targetY - startY;
+    if (Math.abs(distance) < 4) return;
+
+    const startTs = performance.now();
+    const tick = (now) => {
+      const elapsed = now - startTs;
+      const progress = Math.min(1, elapsed / duration);
+      const eased   = easeOutQuart(progress);
+      window.scrollTo(0, startY + distance * eased);
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+
+  // CSS scroll-smooth varsayilanini iptal et (kendi animasyonumuz devraliyor)
+  document.documentElement.classList.remove('scroll-smooth');
+  document.documentElement.style.scrollBehavior = 'auto';
+
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href || href === '#' || href.length < 2) return;
+
+    const target = document.querySelector(href);
+    if (!target) return;
+
+    e.preventDefault();
+    const offsetTop = target.getBoundingClientRect().top + window.pageYOffset - 88; // nav yuksekligi
+    smoothScrollTo(offsetTop, 950);
+
+    // URL'i guncelle (yenilemeden)
+    if (history.pushState) {
+      history.pushState(null, '', href);
+    }
+  });
+
+  /* ========== FAQ smooth aciliska ========== */
+  document.querySelectorAll('details.faq-item').forEach((detail) => {
+    const content = detail.querySelector('.faq-content');
+    if (!content) return;
+
+    // Default acik olan kalemler icin yuksekligi initial olarak ayarla
+    if (detail.open) {
+      content.style.height = 'auto';
+    } else {
+      content.style.height = '0px';
+    }
+
+    const summary = detail.querySelector('summary');
+    if (!summary) return;
+
+    summary.addEventListener('click', (e) => {
+      if (reduceMotion) return; // CSS yonetir
+      e.preventDefault();
+
+      if (detail.open) {
+        // Kapat
+        const startHeight = content.scrollHeight;
+        content.style.height = startHeight + 'px';
+        requestAnimationFrame(() => {
+          content.style.height = '0px';
+        });
+        const onEnd = () => {
+          detail.open = false;
+          content.removeEventListener('transitionend', onEnd);
+        };
+        content.addEventListener('transitionend', onEnd);
+      } else {
+        // Ac
+        detail.open = true;
+        const endHeight = content.scrollHeight;
+        content.style.height = '0px';
+        requestAnimationFrame(() => {
+          content.style.height = endHeight + 'px';
+        });
+        const onEnd = () => {
+          content.style.height = 'auto';
+          content.removeEventListener('transitionend', onEnd);
+        };
+        content.addEventListener('transitionend', onEnd);
+      }
+    });
+  });
+
+  /* ========== Lead form (AJAX + animasyon) ========== */
   const form   = document.getElementById('lead-form');
   const status = document.getElementById('lead-form-status');
 
   if (form && status) {
+    const setStatus = (msg, kind) => {
+      status.classList.remove('is-success', 'is-error', 'hidden');
+      status.classList.add(kind === 'success' ? 'is-success' : 'is-error');
+      status.innerHTML = (kind === 'success'
+        ? '<span class="lead-success-icon material-symbols-outlined align-middle text-base mr-1" style="font-variation-settings:\'FILL\' 1">check_circle</span>'
+        : '<span class="material-symbols-outlined align-middle text-base mr-1">error</span>') + msg;
+    };
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      status.classList.remove('is-success', 'is-error');
       status.classList.add('hidden');
+      status.classList.remove('is-success', 'is-error');
 
       const submit = form.querySelector('button[type="submit"]');
+      let originalHtml = '';
       if (submit) {
+        originalHtml = submit.innerHTML;
         submit.disabled = true;
-        submit.dataset.label = submit.dataset.label || submit.innerHTML;
-        submit.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">progress_activity</span> Gönderiliyor...';
+        submit.innerHTML = '<span class="material-symbols-outlined text-lg spinner-rotate">progress_activity</span> Gönderiliyor...';
       }
 
       try {
@@ -63,36 +174,35 @@
           body: data,
           headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
         });
-        const json = await res.json().catch(() => ({ ok: false, message: 'Sunucu hatası.' }));
-
-        status.textContent = json.message || (json.ok ? 'Talebiniz alındı.' : 'Bir hata oluştu.');
-        status.classList.remove('hidden');
-        status.classList.add(json.ok ? 'is-success' : 'is-error');
+        const text = await res.text();
+        let json;
+        try {
+          json = JSON.parse(text);
+        } catch (parseErr) {
+          throw new Error('Sunucu beklenmeyen bir cevap döndü.');
+        }
 
         if (json.ok) {
+          setStatus(json.message || 'Talebiniz alındı.', 'success');
           form.reset();
           if (window.gtag) {
             window.gtag('event', 'lead_form_submit', { event_category: 'engagement' });
           }
-        } else if (json.errors) {
-          // Alan bazli hatalari ozetle
-          const list = Object.values(json.errors).join(' ');
-          if (list) status.textContent = list;
+        } else {
+          let msg = json.message || 'Bir hata oluştu.';
+          if (json.errors) {
+            msg = Object.values(json.errors).join(' ');
+          }
+          setStatus(msg, 'error');
         }
       } catch (err) {
-        status.textContent = 'Bağlantı hatası, lütfen tekrar deneyin.';
-        status.classList.remove('hidden');
-        status.classList.add('is-error');
+        setStatus('Bağlantı hatası: ' + (err.message || 'Lütfen tekrar deneyin.'), 'error');
       } finally {
         if (submit) {
           submit.disabled = false;
-          if (submit.dataset.label) submit.innerHTML = submit.dataset.label;
+          submit.innerHTML = originalHtml;
         }
       }
     });
   }
-
-  /* ========== Footer dinamik yil (PHP ile uretilse de fallback) ========== */
-  const fy = document.getElementById('footer-year');
-  if (fy) fy.textContent = new Date().getFullYear();
 })();

@@ -10,8 +10,25 @@ if (!defined('CORPOTH_ROOT')) {
 
 $configPath = CORPOTH_ROOT . '/includes/config.php';
 if (!file_exists($configPath)) {
+    if (PHP_SAPI === 'cli') {
+        fwrite(STDERR, "Hata: includes/config.php bulunamadi. install.php uzerinden kurulum yapin.\n");
+        exit(1);
+    }
+    // AJAX/JSON istekleri icin JSON, browser icin HTML don
+    $accept = $_SERVER['HTTP_ACCEPT'] ?? '';
+    $xrw    = $_SERVER['HTTP_X_REQUESTED_WITH'] ?? '';
+    $isJson = strtolower($xrw) === 'xmlhttprequest' || str_contains($accept, 'application/json');
+
     http_response_code(500);
-    echo '<h1>Yapılandırma eksik</h1><p><code>includes/config.php</code> dosyası bulunamadı. Lütfen <code>config.example.php</code> dosyasını kopyalayıp ayarlarınızı girin.</p>';
+    if ($isJson) {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode([
+            'ok' => false,
+            'message' => 'Yapilandirma eksik. Sunucuda includes/config.php henuz olusturulmamis. install.php calistirin.',
+        ], JSON_UNESCAPED_UNICODE);
+    } else {
+        echo '<h1>Yapılandırma eksik</h1><p><code>includes/config.php</code> dosyası bulunamadı. Lütfen <a href="/install.php">install.php</a> üzerinden kurulumu tamamlayın.</p>';
+    }
     exit;
 }
 
@@ -37,7 +54,6 @@ if (!empty($CONFIG['app']['debug'])) {
 require_once CORPOTH_ROOT . '/includes/db.php';
 require_once CORPOTH_ROOT . '/includes/helpers.php';
 
-// Tum modeller (light-weight olduklari icin hep beraber yuklenir)
 foreach (glob(CORPOTH_ROOT . '/includes/models/*.php') as $modelFile) {
     require_once $modelFile;
 }
