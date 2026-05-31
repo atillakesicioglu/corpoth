@@ -541,6 +541,28 @@ body.mobile-menu-open { overflow: hidden; }
   border-bottom: 1px solid rgba(196, 198, 209, 0.25);
   overflow: hidden;
 }
+.page-hero-inner {
+  padding-top: 5.25rem;
+  padding-bottom: 1.75rem;
+}
+@media (min-width: 768px) {
+  .page-hero-inner {
+    padding-top: 6rem;
+    padding-bottom: 2.25rem;
+  }
+}
+/* Alt bolumden bir parca gorunsun */
+.page-hero + section,
+.page-hero + * > section:first-child {
+  scroll-margin-top: 5.5rem;
+}
+.page-hero:not(.page-hero-image) {
+  max-height: min(360px, 46vh);
+}
+.section-after-hero {
+  position: relative;
+  z-index: 2;
+}
 .page-hero-bg {
   position: absolute;
   inset: 0;
@@ -555,6 +577,11 @@ body.mobile-menu-open { overflow: hidden; }
   --hero-blur: 0px;
   --hero-overlay-alpha: 0.5;
   background: #0a1428;
+  min-height: min(340px, 42vh);
+  max-height: min(400px, 48vh);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 .page-hero-image .page-hero-img {
   position: absolute;

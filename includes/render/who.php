@@ -1,7 +1,7 @@
 <?php
 $audiences = audiences_active();
 ?>
-<section class="py-24 md:py-32 px-6 md:px-12 bg-surface" id="who">
+<section class="py-14 md:py-20 px-6 md:px-12 bg-surface" id="who">
   <div class="max-w-screen-2xl mx-auto text-center mb-16 md:mb-20" data-animate="fade-up">
     <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Corpoth Kimler İçin?</h2>
     <p class="text-secondary max-w-2xl mx-auto">Sağlıklı bir çalışma kültürü oluşturmak isteyen vizyoner kurumlar ve çalışanları için tasarlandı.</p>

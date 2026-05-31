@@ -21,7 +21,7 @@ $about     = setting('footer_about');
       <ul class="space-y-1">
         <li><a class="footer-link" href="/hakkimizda.php">Hakkımızda</a></li>
         <li><a class="footer-link" href="/ekip.php">Ekip</a></li>
-        <li><a class="footer-link" href="/hizmet.php">Hizmet</a></li>
+        <li><a class="footer-link" href="/ne-yapiyoruz.php">Ne yapıyoruz?</a></li>
         <li><a class="footer-link" href="/referanslar.php">Referanslar</a></li>
         <li><a class="footer-link" href="/blog.php">Blog</a></li>
         <li><a class="footer-link" href="/sss.php">SSS</a></li>

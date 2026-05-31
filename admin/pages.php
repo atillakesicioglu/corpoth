@@ -73,7 +73,7 @@ $all = page_all();
     <div class="field">
       <label>Slug (URL) <span class="text-red-500">*</span></label>
       <input type="text" name="slug" required pattern="[a-z0-9\-]+" value="<?= e($editing['slug'] ?? '') ?>" placeholder="hakkimizda">
-      <span class="help">Sadece küçük harf, rakam ve tire. Hero ayarları: <code>hakkimizda</code>, <code>hizmet-detay</code>, <code>ekip</code>, <code>referanslar</code>, <code>sss</code>, <code>iletisim</code>, <code>blog</code></span>
+      <span class="help">Sayfa slug: <code>hakkimizda</code>, <code>ne-yapiyoruz</code>, <code>ekip</code>, <code>referanslar</code>, <code>sss</code>, <code>iletisim</code>, <code>blog</code></span>
     </div>
   </div>
 

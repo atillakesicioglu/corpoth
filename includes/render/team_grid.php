@@ -8,7 +8,7 @@
 $members = $team_members ?? (function_exists('team_active') ? team_active() : []);
 if (!$members) return;
 ?>
-<section class="py-20 md:py-28 px-6 md:px-12">
+<section class="py-14 md:py-20 px-6 md:px-12">
   <div class="max-w-screen-2xl mx-auto">
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
       <?php foreach ($members as $i => $m):

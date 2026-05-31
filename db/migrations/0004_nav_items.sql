@@ -31,7 +31,7 @@ INSERT IGNORE INTO `nav_items`
   (`id`, `parent_id`, `label`,    `href`,            `icon`, `description`, `key_slug`,   `is_dropdown_parent`, `sort_order`, `is_active`)
 VALUES
   (1, NULL, 'Anasayfa',  '/',                NULL, NULL, 'home',       0, 10, 1),
-  (2, NULL, 'Hizmet',    '/hizmet.php',      NULL, NULL, 'service',    0, 20, 1),
+  (2, NULL, 'Ne yapıyoruz?', '/ne-yapiyoruz.php', NULL, NULL, 'service',    0, 20, 1),
   (3, NULL, 'Kurumsal',  '#',                NULL, NULL, 'corporate',  1, 30, 1),
   (4, NULL, 'Bilgi',     '#',                NULL, NULL, 'resources',  1, 40, 1),
   (5, NULL, 'İletişim',  '/iletisim.php',    NULL, NULL, 'contact',    0, 50, 1);

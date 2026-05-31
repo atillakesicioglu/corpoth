@@ -36,7 +36,7 @@ $linkedin  = setting('contact_linkedin');
   require __DIR__ . '/includes/render/page_hero.php';
   ?>
 
-  <section class="py-16 md:py-20 px-6 md:px-12" id="form">
+  <section class="py-12 md:py-16 px-6 md:px-12" id="form">
     <div class="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
       <!-- Sol: Iletisim kanallari -->
       <div class="lg:col-span-1 space-y-4" data-animate="fade-up">

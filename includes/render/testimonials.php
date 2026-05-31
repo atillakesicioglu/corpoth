@@ -2,7 +2,7 @@
 $items = testimonials_active();
 if (!$items) return;
 ?>
-<section class="py-24 md:py-32 px-6 md:px-12 bg-surface-container-low" id="testimonials">
+<section class="py-14 md:py-20 px-6 md:px-12 bg-surface-container-low" id="testimonials">
   <div class="max-w-screen-2xl mx-auto">
     <div class="text-center mb-14 md:mb-20" data-animate="fade-up">
       <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Müşteri Yorumları</h2>

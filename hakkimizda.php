@@ -35,7 +35,7 @@ require __DIR__ . '/includes/render/head.php';
   ?>
 
   <?php if (!empty($page['content_html'])): ?>
-  <section class="py-16 md:py-24 px-6 md:px-12">
+  <section class="py-12 md:py-16 px-6 md:px-12">
     <div class="max-w-3xl mx-auto" data-animate="fade-up">
       <article class="blog-prose">
         <?= safe_html($page['content_html']) ?>
@@ -65,7 +65,7 @@ require __DIR__ . '/includes/render/head.php';
   <!-- Ekip onizleme + ekip sayfasi linki -->
   <?php $teamPreview = function_exists('team_active') ? team_active() : []; ?>
   <?php if ($teamPreview): ?>
-  <section class="py-20 md:py-28 px-6 md:px-12">
+  <section class="py-14 md:py-20 px-6 md:px-12">
     <div class="max-w-screen-2xl mx-auto">
       <div class="text-center mb-12" data-animate="fade-up">
         <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Ekibimiz</h2>

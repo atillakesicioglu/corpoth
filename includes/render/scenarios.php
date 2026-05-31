@@ -1,7 +1,7 @@
 <?php
 $scenarios = scenarios_active();
 ?>
-<section class="py-24 md:py-32 px-6 md:px-12 bg-surface" id="scenarios">
+<section class="py-14 md:py-20 px-6 md:px-12 bg-surface" id="scenarios">
   <div class="max-w-screen-2xl mx-auto">
     <div class="text-center mb-16 md:mb-20" data-animate="fade-up">
       <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Kullanım Senaryoları</h2>

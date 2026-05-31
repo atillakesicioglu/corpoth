@@ -2,7 +2,7 @@
 $benefits = benefits_active();
 $stats    = stats_active();
 ?>
-<section class="py-24 md:py-32 px-6 md:px-12 bg-surface-container-low" id="benefits">
+<section class="py-14 md:py-20 px-6 md:px-12 bg-surface-container-low" id="benefits">
   <div class="max-w-screen-2xl mx-auto">
     <div class="flex flex-col lg:flex-row gap-16">
       <div class="lg:w-1/3" data-animate="slide-right">

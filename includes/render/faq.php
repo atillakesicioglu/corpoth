@@ -4,7 +4,7 @@ $items = faq_active($faqLimit);
 if (!$items) return;
 $showAllLink = !empty($faq_show_all_link);
 ?>
-<section class="py-24 md:py-32 px-6 md:px-12 bg-surface" id="faq">
+<section class="py-14 md:py-20 px-6 md:px-12 bg-surface" id="faq">
   <div class="max-w-4xl mx-auto">
     <div class="text-center mb-12 md:mb-16" data-animate="fade-up">
       <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Sıkça Sorulan Sorular</h2>

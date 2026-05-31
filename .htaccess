@@ -15,6 +15,9 @@ DirectoryIndex index.php index.html
   # index.html cagrildiginda index.php'ye yonlendir (eski URL korunsun)
   RewriteRule ^index\.html$ /index.php [R=301,L]
 
+  # Eski hizmet URL -> ne-yapiyoruz
+  RewriteRule ^hizmet\.php$ /ne-yapiyoruz.php [R=301,L]
+
   # Blog detay: /blog/{slug} -> /blog-detail.php?slug=...
   RewriteRule ^blog/([a-z0-9][a-z0-9-]*)/?$ /blog-detail.php?slug=$1 [L,QSA]
 

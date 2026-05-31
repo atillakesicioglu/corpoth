@@ -5,7 +5,7 @@
 $posts = function_exists('blog_featured') ? blog_featured(3) : [];
 if (!$posts) return;
 ?>
-<section class="py-24 md:py-32 px-6 md:px-12 bg-surface-container-low" id="blog">
+<section class="py-14 md:py-20 px-6 md:px-12 bg-surface-container-low" id="blog">
   <div class="max-w-screen-2xl mx-auto">
     <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12 md:mb-16" data-animate="fade-up">
       <div>

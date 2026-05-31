@@ -7,7 +7,7 @@ $siteUrl = rtrim(setting('canonical_url', 'https://www.corpoth.com'), '/');
 
 $urls = [
     ['loc' => '/',                'changefreq' => 'weekly',  'priority' => '1.0'],
-    ['loc' => '/hizmet.php',      'changefreq' => 'monthly', 'priority' => '0.9'],
+    ['loc' => '/ne-yapiyoruz.php', 'changefreq' => 'monthly', 'priority' => '0.9'],
     ['loc' => '/hakkimizda.php',  'changefreq' => 'monthly', 'priority' => '0.8'],
     ['loc' => '/ekip.php',        'changefreq' => 'monthly', 'priority' => '0.7'],
     ['loc' => '/referanslar.php', 'changefreq' => 'monthly', 'priority' => '0.7'],

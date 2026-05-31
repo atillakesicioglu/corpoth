@@ -34,15 +34,15 @@ $eyebrowCls   = $hasImage ? 'text-white/80' : 'text-primary';
     <div class="page-hero-bg" aria-hidden="true"></div>
   <?php endif; ?>
 
-  <div class="max-w-screen-2xl mx-auto px-6 md:px-12 pt-32 md:pt-40 pb-16 md:pb-24 relative z-10">
+  <div class="max-w-screen-2xl mx-auto px-6 md:px-12 page-hero-inner relative z-10">
     <?php if (!empty($breadcrumbs)) require __DIR__ . '/breadcrumb.php'; ?>
 
     <div class="max-w-3xl <?= $alignCls ?> mt-6" data-animate="fade-up">
       <?php if (!empty($hero_eyebrow)): ?>
-      <span class="<?= $eyebrowCls ?> font-label uppercase tracking-[0.2em] text-xs font-bold mb-4 block"><?= e($hero_eyebrow) ?></span>
+      <span class="<?= $eyebrowCls ?> font-label tracking-[0.12em] text-xs font-bold mb-3 block"><?= e($hero_eyebrow) ?></span>
       <?php endif; ?>
 
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mb-6 <?= $titleCls ?>">
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.15] mb-4 <?= $titleCls ?>">
         <?= safe_html($hero_title ?? '') ?>
       </h1>
 

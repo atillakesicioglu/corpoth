@@ -20,7 +20,7 @@ $wa        = setting('contact_whatsapp');
 $secText   = $cta_secondary_text ?? ($wa ? 'WhatsApp ile yaz' : null);
 $secHref   = $cta_secondary_href ?? ($wa ? wa_link($wa) : null);
 ?>
-<section class="py-20 md:py-24 px-6 md:px-12">
+<section class="py-14 md:py-20 px-6 md:px-12">
   <div class="max-w-screen-2xl mx-auto">
     <div class="cta-band rounded-3xl px-8 md:px-16 py-14 md:py-20 text-center relative overflow-hidden" data-animate="fade-up">
       <div class="cta-band-orb cta-band-orb-1" aria-hidden="true"></div>

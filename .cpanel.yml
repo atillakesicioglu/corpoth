@@ -6,7 +6,8 @@ deployment:
     # Statik dosyalar
     - /bin/cp -rT assets   $DEPLOYPATH/assets
     - /bin/cp index.php        $DEPLOYPATH/
-    - /bin/cp hizmet.php       $DEPLOYPATH/
+    - /bin/cp ne-yapiyoruz.php  $DEPLOYPATH/
+    - /bin/cp hizmet.php        $DEPLOYPATH/
     - /bin/cp hakkimizda.php   $DEPLOYPATH/
     - /bin/cp ekip.php         $DEPLOYPATH/
     - /bin/cp ekip-detail.php  $DEPLOYPATH/

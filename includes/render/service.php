@@ -2,7 +2,7 @@
 $svc      = service_block_get();
 $features = service_features_active();
 ?>
-<section class="bg-surface-container-low py-24 md:py-32 px-6 md:px-12" id="service">
+<section class="bg-surface-container-low py-14 md:py-20 px-6 md:px-12 section-after-hero" id="service">
   <div class="max-w-screen-2xl mx-auto">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
       <?php if (!empty($svc['image_path'])): ?>

@@ -82,7 +82,8 @@ function page_public_url(string $slug): string
 {
     static $map = [
         'hakkimizda'   => '/hakkimizda.php',
-        'hizmet-detay' => '/hizmet.php',
+        'hizmet-detay' => '/ne-yapiyoruz.php',
+        'ne-yapiyoruz' => '/ne-yapiyoruz.php',
         'ekip'         => '/ekip.php',
         'referanslar'  => '/referanslar.php',
         'sss'          => '/sss.php',

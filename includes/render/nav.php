@@ -13,7 +13,7 @@ $navItems = function_exists('nav_tree') ? nav_tree() : null;
 if (!$navItems) {
     $navItems = [
         ['type'  => 'link',     'key'   => 'home',     'label' => 'Anasayfa',  'href'  => '/'],
-        ['type'  => 'link',     'key'   => 'service',  'label' => 'Hizmet',    'href'  => '/hizmet.php'],
+        ['type'  => 'link',     'key'   => 'service',  'label' => 'Ne yapıyoruz?', 'href'  => '/ne-yapiyoruz.php'],
         [
             'type'    => 'dropdown',
             'key'     => 'corporate',
@@ -52,7 +52,7 @@ $isActive = function ($item) use ($current) {
       <img src="/assets/images/corpoth-logo.png" alt="CORPOTH" class="h-12 md:h-14 w-auto transition-transform duration-300 group-hover:scale-105" />
     </a>
 
-    <div class="hidden md:flex items-center gap-x-1 font-sans text-sm font-medium tracking-wide uppercase">
+    <div class="hidden md:flex items-center gap-x-1 font-sans text-sm font-medium tracking-wide">
       <?php foreach ($navItems as $i => $item): ?>
         <?php $active = $isActive($item); ?>
         <?php if ($item['type'] === 'link'): ?>

@@ -29,7 +29,7 @@ $testis = function_exists('testimonials_active') ? testimonials_active() : [];
   ?>
 
   <?php if ($logos): ?>
-  <section class="py-16 md:py-24 px-6 md:px-12">
+  <section class="py-12 md:py-16 px-6 md:px-12">
     <div class="max-w-screen-2xl mx-auto">
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 md:gap-6">
         <?php foreach ($logos as $i => $l): ?>

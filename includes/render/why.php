@@ -2,7 +2,7 @@
 $why    = why_block_get();
 $values = value_props_active();
 ?>
-<section class="py-24 md:py-32 px-6 md:px-12 bg-primary text-on-primary rounded-t-[3rem] md:rounded-t-[4rem] overflow-hidden" id="why">
+<section class="py-14 md:py-20 px-6 md:px-12 bg-primary text-on-primary rounded-t-[3rem] md:rounded-t-[4rem] overflow-hidden" id="why">
   <div class="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
     <div data-animate="slide-right">
       <h2 class="text-4xl md:text-5xl font-bold mb-8 leading-tight"><?= e($why['title'] ?? 'Neden CORPOTH?') ?></h2>

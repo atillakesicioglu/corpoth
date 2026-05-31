@@ -4,7 +4,7 @@ $phoneLbl  = setting('contact_phone_label');
 $wa        = setting('contact_whatsapp');
 $email     = setting('contact_email');
 ?>
-<section class="py-24 md:py-32 px-6 md:px-12 bg-surface" id="contact">
+<section class="py-14 md:py-20 px-6 md:px-12 bg-surface" id="contact">
   <div class="max-w-6xl mx-auto">
     <div class="text-center mb-12" data-animate="fade-up">
       <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-6">Şimdi siz de çalışanlarınıza değer katın</h2>

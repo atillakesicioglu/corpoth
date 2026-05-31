@@ -28,7 +28,7 @@ require __DIR__ . '/includes/render/head.php';
   <?php require __DIR__ . '/includes/render/team_grid.php'; ?>
 
   <!-- Boyle bir ekibe katilmak ister misiniz? -->
-  <section class="py-16 md:py-20 px-6 md:px-12 bg-surface-container-low">
+  <section class="py-12 md:py-16 px-6 md:px-12 bg-surface-container-low">
     <div class="max-w-3xl mx-auto text-center" data-animate="fade-up">
       <span class="text-primary font-label uppercase tracking-[0.2em] text-xs font-bold mb-3 block">Kariyer</span>
       <h2 class="text-2xl md:text-3xl font-bold tracking-tight mb-4">Ekibimize katılmak ister misiniz?</h2>
