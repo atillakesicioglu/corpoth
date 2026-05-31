@@ -1,0 +1,12 @@
+DirectoryIndex index.php
+
+# Admin alt-klasorlerine direkt erisimi engelle
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+
+# Bu klasorde browser cache'i kapali
+<IfModule mod_headers.c>
+  Header set Cache-Control "no-store, no-cache, must-revalidate"
+  Header set X-Frame-Options "DENY"
+</IfModule>

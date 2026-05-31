@@ -5,3 +5,20 @@ nav_fragment.html
 hero_buttons_fragment.html
 contact_cta_fragment.html
 footer_contact_fragment.html
+
+# Yerel yapilandirma (cpanel'de manuel olusturulacak)
+includes/config.php
+
+# Node / build
+node_modules/
+package-lock.json
+
+# Yuklenen medya (kullanicinin yonetimi)
+uploads/*
+!uploads/.htaccess
+!uploads/index.html
+
+# OS
+Thumbs.db
+.DS_Store
+

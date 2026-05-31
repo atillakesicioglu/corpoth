@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /uploads/
+Disallow: /db/
+Disallow: /submit-lead.php
+
+Sitemap: https://www.corpoth.com/sitemap.xml

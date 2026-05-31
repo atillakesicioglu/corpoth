@@ -2,5 +2,35 @@
 deployment:
   tasks:
     - export DEPLOYPATH=$HOME/public_html
-    - /bin/cp -r index.html $DEPLOYPATH/
-    - /bin/cp -r assets $DEPLOYPATH/
+
+    # Statik dosyalar
+    - /bin/cp -rT assets   $DEPLOYPATH/assets
+    - /bin/cp index.php       $DEPLOYPATH/
+    - /bin/cp kvkk.php        $DEPLOYPATH/
+    - /bin/cp gizlilik.php    $DEPLOYPATH/
+    - /bin/cp submit-lead.php $DEPLOYPATH/
+    - /bin/cp install.php     $DEPLOYPATH/
+    - /bin/cp robots.txt      $DEPLOYPATH/
+    - /bin/cp sitemap.xml     $DEPLOYPATH/
+    - /bin/cp .htaccess       $DEPLOYPATH/
+
+    # Includes (model + render + bootstrap + helpers)
+    - /bin/mkdir -p $DEPLOYPATH/includes/models $DEPLOYPATH/includes/render
+    - /bin/cp -rT includes $DEPLOYPATH/includes
+
+    # Admin paneli
+    - /bin/mkdir -p $DEPLOYPATH/admin/partials $DEPLOYPATH/admin/assets
+    - /bin/cp -rT admin $DEPLOYPATH/admin
+
+    # DB SQL dosyalari (kurulum icin)
+    - /bin/mkdir -p $DEPLOYPATH/db
+    - /bin/cp -rT db $DEPLOYPATH/db
+
+    # Uploads (yoksa olustur, varsa dokunma)
+    - /bin/mkdir -p $DEPLOYPATH/uploads
+    - /bin/cp -n uploads/.htaccess  $DEPLOYPATH/uploads/.htaccess  || true
+    - /bin/cp -n uploads/index.html $DEPLOYPATH/uploads/index.html || true
+    - /bin/chmod 0775 $DEPLOYPATH/uploads || true
+
+    # config.php elle olusturulmali (config.example.php sablonu deploy edilir)
+    - /bin/cp includes/config.example.php $DEPLOYPATH/includes/config.example.php

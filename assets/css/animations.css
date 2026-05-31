@@ -1,0 +1,71 @@
+/* =============================================================
+   Corpoth - Scroll-reveal + sayac + ufak hareket animasyonlari
+   prefers-reduced-motion ile tamamen devre disi kalir.
+   ============================================================= */
+
+[data-animate] {
+  opacity: 0;
+  will-change: transform, opacity;
+  transition:
+    opacity .8s cubic-bezier(.22, .61, .36, 1),
+    transform .8s cubic-bezier(.22, .61, .36, 1);
+}
+
+[data-animate="fade-up"]    { transform: translate3d(0, 32px, 0); }
+[data-animate="fade-down"]  { transform: translate3d(0, -32px, 0); }
+[data-animate="fade-in"]    { transform: translate3d(0, 0, 0); }
+[data-animate="slide-left"] { transform: translate3d(36px, 0, 0); }
+[data-animate="slide-right"]{ transform: translate3d(-36px, 0, 0); }
+[data-animate="zoom"]       { transform: scale(.95); }
+
+[data-animate].is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+}
+
+/* Cookie banner gecisi */
+#cookie-banner {
+  transform: translateY(120%);
+  transition: transform .45s cubic-bezier(.22, .61, .36, 1);
+}
+#cookie-banner.is-shown {
+  transform: translateY(0);
+}
+
+/* Mobile menu gecis */
+#mobile-menu {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .35s ease;
+}
+#mobile-menu.is-open {
+  max-height: 600px;
+}
+
+/* Form basari/hata mesaj stili (JS ile class eklenir) */
+#lead-form-status.is-success {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+#lead-form-status.is-error {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+/* Reduced motion: tum gecisleri devre disi birak */
+@media (prefers-reduced-motion: reduce) {
+  [data-animate] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  #cookie-banner {
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* Hero rakam balonu icin parallax-lite (opsiyonel JS hook'u) */
+[data-parallax] { will-change: transform; }

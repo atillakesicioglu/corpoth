@@ -49,7 +49,6 @@
   filter: grayscale(0%) opacity(1);
 }
 
-/* Fallback text when image missing */
 .ref-logo-pill span {
   font-size: 0.78rem;
   font-weight: 700;
@@ -57,3 +56,22 @@
   color: #43474f;
   text-align: center;
 }
+
+/* ---- Article (KVKK / Gizlilik) basit prose tarzi ---- */
+article.prose h1, article.prose h2, article.prose h3 {
+  margin-top: 1.6em;
+  margin-bottom: .6em;
+  font-weight: 700;
+  color: #1b1c1c;
+}
+article.prose h1 { font-size: 2rem; }
+article.prose h2 { font-size: 1.5rem; }
+article.prose h3 { font-size: 1.2rem; }
+article.prose p { margin: .8em 0; line-height: 1.7; color: #43474f; }
+article.prose ul, article.prose ol { padding-left: 1.4em; margin: .8em 0; color: #43474f; }
+article.prose li { margin: .35em 0; }
+article.prose a { color: #002555; text-decoration: underline; }
+article.prose strong { color: #1b1c1c; }
+
+/* ---- Form focus disinda inputlar uzerinde temiz hover ---- */
+input:focus, textarea:focus, select:focus { outline: none; }
