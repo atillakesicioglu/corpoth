@@ -3,21 +3,44 @@
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ========== Mobil menu ========== */
+  /* ========== Native CSS scroll-smooth'i hemen iptal et ==========
+     Tailwind 'scroll-smooth' class'i <html>'de aktif olabilir. JS smooth
+     scroll'u kendimiz yoneteceiz, dolayisiyla CSS'i kaldiriyoruz. */
+  document.documentElement.classList.remove('scroll-smooth');
+  document.documentElement.style.scrollBehavior = 'auto';
+
+  /* ========== Mobil tam ekran menu ========== */
   const navToggle  = document.getElementById('nav-toggle');
   const navIcon    = document.getElementById('nav-toggle-icon');
   const mobileMenu = document.getElementById('mobile-menu');
 
-  if (navToggle && mobileMenu) {
-    const setOpen = (open) => {
-      mobileMenu.classList.toggle('hidden', !open);
-      mobileMenu.classList.toggle('is-open', open);
+  const setMobileMenu = (open) => {
+    if (!mobileMenu) return;
+    mobileMenu.classList.toggle('is-open', open);
+    mobileMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
+    document.body.classList.toggle('mobile-menu-open', open);
+    if (navToggle) {
       navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       navToggle.setAttribute('aria-label', open ? 'Menüyü kapat' : 'Menüyü aç');
-      if (navIcon) navIcon.textContent = open ? 'close' : 'menu';
-    };
-    navToggle.addEventListener('click', () => setOpen(mobileMenu.classList.contains('hidden')));
-    mobileMenu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => setOpen(false)));
+    }
+    if (navIcon) navIcon.textContent = open ? 'close' : 'menu';
+  };
+
+  if (navToggle && mobileMenu) {
+    navToggle.addEventListener('click', () => {
+      setMobileMenu(!mobileMenu.classList.contains('is-open'));
+    });
+
+    mobileMenu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => setMobileMenu(false));
+    });
+
+    // ESC ile kapat
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('is-open')) {
+        setMobileMenu(false);
+      }
+    });
   }
 
   /* ========== Cookie banner ========== */
@@ -46,16 +69,15 @@
   }
 
   /* ========== Smooth scroll (custom easing) ==========
-     Hash-link tiklamalarini yakalayip kendi animasyonumuzla scroll'lariz.
-     Easing: easeOutQuart (basta hizli, sonda yavas). */
+     Easing: easeOutQuart (basta hizli, sonda yavas) */
   const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
 
-  const smoothScrollTo = (targetY, duration = 900) => {
+  const smoothScrollTo = (targetY, duration = 950) => {
     if (reduceMotion) {
       window.scrollTo(0, targetY);
       return;
     }
-    const startY  = window.pageYOffset;
+    const startY = window.pageYOffset;
     const distance = targetY - startY;
     if (Math.abs(distance) < 4) return;
 
@@ -70,76 +92,52 @@
     requestAnimationFrame(tick);
   };
 
-  // CSS scroll-smooth varsayilanini iptal et (kendi animasyonumuz devraliyor)
-  document.documentElement.classList.remove('scroll-smooth');
-  document.documentElement.style.scrollBehavior = 'auto';
+  // Click handler - capture phase'de calistir, herhangi bir parent
+  // stopPropagation yapsa bile bizim handler garanti tetiklenir.
+  const onAnchorClick = (e) => {
+    // Modifier tuslari (Ctrl/Cmd/Shift/Alt) veya orta-tikla ile yeni sekmede acmaya izin ver
+    if (e.defaultPrevented) return;
+    if (e.button !== undefined && e.button !== 0) return;
+    if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
 
-  document.addEventListener('click', (e) => {
-    const a = e.target.closest('a[href^="#"]');
+    const a = e.target.closest && e.target.closest('a[href]');
     if (!a) return;
-    const href = a.getAttribute('href');
-    if (!href || href === '#' || href.length < 2) return;
 
-    const target = document.querySelector(href);
+    const href = a.getAttribute('href');
+    if (!href) return;
+
+    // Ayni sayfa hash linki mi?
+    let hash = '';
+    if (href.startsWith('#')) {
+      hash = href;
+    } else if (href.startsWith('/#')) {
+      hash = href.substring(1);
+    } else {
+      return; // baska bir sayfaya gidiyorsa karismayalim
+    }
+
+    if (hash === '#' || hash.length < 2) return;
+
+    let target;
+    try { target = document.querySelector(hash); } catch (_) { return; }
     if (!target) return;
 
     e.preventDefault();
-    const offsetTop = target.getBoundingClientRect().top + window.pageYOffset - 88; // nav yuksekligi
+    e.stopPropagation();
+
+    const navHeight = 80; // h-20
+    const offsetTop = target.getBoundingClientRect().top + window.pageYOffset - (navHeight + 8);
+
     smoothScrollTo(offsetTop, 950);
 
-    // URL'i guncelle (yenilemeden)
     if (history.pushState) {
-      history.pushState(null, '', href);
+      history.pushState(null, '', hash);
     }
-  });
+  };
 
-  /* ========== FAQ smooth aciliska ========== */
-  document.querySelectorAll('details.faq-item').forEach((detail) => {
-    const content = detail.querySelector('.faq-content');
-    if (!content) return;
-
-    // Default acik olan kalemler icin yuksekligi initial olarak ayarla
-    if (detail.open) {
-      content.style.height = 'auto';
-    } else {
-      content.style.height = '0px';
-    }
-
-    const summary = detail.querySelector('summary');
-    if (!summary) return;
-
-    summary.addEventListener('click', (e) => {
-      if (reduceMotion) return; // CSS yonetir
-      e.preventDefault();
-
-      if (detail.open) {
-        // Kapat
-        const startHeight = content.scrollHeight;
-        content.style.height = startHeight + 'px';
-        requestAnimationFrame(() => {
-          content.style.height = '0px';
-        });
-        const onEnd = () => {
-          detail.open = false;
-          content.removeEventListener('transitionend', onEnd);
-        };
-        content.addEventListener('transitionend', onEnd);
-      } else {
-        // Ac
-        detail.open = true;
-        const endHeight = content.scrollHeight;
-        content.style.height = '0px';
-        requestAnimationFrame(() => {
-          content.style.height = endHeight + 'px';
-        });
-        const onEnd = () => {
-          content.style.height = 'auto';
-          content.removeEventListener('transitionend', onEnd);
-        };
-        content.addEventListener('transitionend', onEnd);
-      }
-    });
-  });
+  document.addEventListener('click', onAnchorClick, true); // capture
+  // Touch cihazlar icin ek garanti (bazi tarayicilarda click delay olabilir)
+  document.addEventListener('touchend', () => {}, { passive: true });
 
   /* ========== Lead form (AJAX + animasyon) ========== */
   const form   = document.getElementById('lead-form');

@@ -10,13 +10,13 @@ if (!$items) return;
     </div>
     <div class="divide-y divide-outline-variant/15 border border-outline-variant/15 rounded-xl bg-surface-container-lowest overflow-hidden">
       <?php foreach ($items as $i => $f): ?>
-      <details class="faq-item group" data-animate="fade-up" data-animate-delay="<?= 60 * $i ?>" <?= $i === 0 ? 'open' : '' ?>>
-        <summary class="flex items-start justify-between gap-4 p-5 md:p-6 list-none">
-          <span class="font-semibold text-on-surface text-base md:text-lg pr-4"><?= e($f['question']) ?></span>
-          <span class="material-symbols-outlined text-primary shrink-0 faq-toggle">add</span>
+      <details class="faq-item" data-animate="fade-up" data-animate-delay="<?= 60 * $i ?>" <?= $i === 0 ? 'open' : '' ?>>
+        <summary>
+          <span class="faq-question"><?= e($f['question']) ?></span>
+          <span class="material-symbols-outlined faq-toggle">add</span>
         </summary>
         <div class="faq-content">
-          <div class="faq-content-inner px-5 md:px-6 pb-5 md:pb-6 text-secondary leading-relaxed">
+          <div class="faq-content-inner">
             <?= safe_html(nl2br(e($f['answer']))) ?>
           </div>
         </div>

@@ -18,7 +18,7 @@ $about     = setting('footer_about');
     </div>
     <div>
       <h5 class="font-bold text-white mb-6 font-sans text-sm uppercase tracking-wider">Hızlı Linkler</h5>
-      <ul class="space-y-3">
+      <ul class="space-y-1">
         <li><a class="footer-link" href="#service">Hizmetlerimiz</a></li>
         <li><a class="footer-link" href="#why">Neden Biz?</a></li>
         <li><a class="footer-link" href="#testimonials">Yorumlar</a></li>
@@ -28,10 +28,10 @@ $about     = setting('footer_about');
     </div>
     <div>
       <h5 class="font-bold text-white mb-6 font-sans text-sm uppercase tracking-wider">İletişim</h5>
-      <ul class="space-y-3">
+      <ul class="space-y-1">
         <?php if ($phone): ?>
         <li>
-          <a href="tel:<?= e(tel_link($phone)) ?>" class="footer-link inline-flex items-center gap-3">
+          <a href="tel:<?= e(tel_link($phone)) ?>" class="footer-link">
             <span class="material-symbols-outlined text-base footer-icon">call</span>
             <span><?= e($phoneLbl ?: $phone) ?></span>
           </a>
@@ -39,7 +39,7 @@ $about     = setting('footer_about');
         <?php endif; ?>
         <?php if ($website): ?>
         <li>
-          <a href="<?= e($website) ?>" target="_blank" rel="noopener noreferrer" class="footer-link inline-flex items-center gap-3">
+          <a href="<?= e($website) ?>" target="_blank" rel="noopener noreferrer" class="footer-link">
             <span class="material-symbols-outlined text-base footer-icon">language</span>
             <span><?= e(preg_replace('#^https?://#', '', $website)) ?></span>
           </a>
@@ -47,7 +47,7 @@ $about     = setting('footer_about');
         <?php endif; ?>
         <?php if ($email): ?>
         <li>
-          <a href="mailto:<?= e($email) ?>" class="footer-link inline-flex items-center gap-3">
+          <a href="mailto:<?= e($email) ?>" class="footer-link">
             <span class="material-symbols-outlined text-base footer-icon">mail</span>
             <span><?= e($email) ?></span>
           </a>
@@ -55,7 +55,7 @@ $about     = setting('footer_about');
         <?php endif; ?>
         <?php if ($linkedin): ?>
         <li>
-          <a href="<?= e($linkedin) ?>" target="_blank" rel="noopener noreferrer" class="footer-link inline-flex items-center gap-3">
+          <a href="<?= e($linkedin) ?>" target="_blank" rel="noopener noreferrer" class="footer-link">
             <span class="material-symbols-outlined text-base footer-icon">work</span>
             <span>LinkedIn</span>
           </a>
@@ -65,7 +65,7 @@ $about     = setting('footer_about');
     </div>
     <div>
       <h5 class="font-bold text-white mb-6 font-sans text-sm uppercase tracking-wider">Yasal</h5>
-      <ul class="space-y-3">
+      <ul class="space-y-1">
         <li><a class="footer-link" href="/gizlilik.php">Gizlilik Politikası</a></li>
         <li><a class="footer-link" href="/kvkk.php">KVKK Aydınlatma Metni</a></li>
       </ul>
