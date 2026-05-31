@@ -29,7 +29,11 @@ require __DIR__ . '/includes/render/head.php';
 <?php require __DIR__ . '/includes/render/footer.php'; ?>
 <?php require __DIR__ . '/includes/render/cookie_banner.php'; ?>
 
-<script src="/assets/js/main.js" defer></script>
-<script src="/assets/js/animations.js" defer></script>
+<?php
+$mainV = @filemtime(__DIR__ . '/assets/js/main.js') ?: time();
+$animV = @filemtime(__DIR__ . '/assets/js/animations.js') ?: $mainV;
+?>
+<script src="/assets/js/main.js?v=<?= $mainV ?>" defer></script>
+<script src="/assets/js/animations.js?v=<?= $animV ?>" defer></script>
 </body>
 </html>

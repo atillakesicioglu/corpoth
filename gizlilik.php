@@ -17,6 +17,7 @@ require __DIR__ . '/includes/render/head.php';
 </main>
 <?php require __DIR__ . '/includes/render/footer.php'; ?>
 <?php require __DIR__ . '/includes/render/cookie_banner.php'; ?>
-<script src="/assets/js/main.js" defer></script>
+<?php $mainV = @filemtime(__DIR__ . '/assets/js/main.js') ?: time(); ?>
+<script src="/assets/js/main.js?v=<?= $mainV ?>" defer></script>
 </body>
 </html>

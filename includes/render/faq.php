@@ -10,17 +10,17 @@ if (!$items) return;
     </div>
     <div class="divide-y divide-outline-variant/15 border border-outline-variant/15 rounded-xl bg-surface-container-lowest overflow-hidden">
       <?php foreach ($items as $i => $f): ?>
-      <details class="faq-item" data-animate="fade-up" data-animate-delay="<?= 60 * $i ?>" <?= $i === 0 ? 'open' : '' ?>>
-        <summary>
+      <div class="faq-item" data-faq data-animate="fade-up" data-animate-delay="<?= 60 * $i ?>">
+        <button type="button" class="faq-summary" aria-expanded="false">
           <span class="faq-question"><?= e($f['question']) ?></span>
           <span class="material-symbols-outlined faq-toggle">add</span>
-        </summary>
+        </button>
         <div class="faq-content">
           <div class="faq-content-inner">
             <?= safe_html(nl2br(e($f['answer']))) ?>
           </div>
         </div>
-      </details>
+      </div>
       <?php endforeach; ?>
     </div>
   </div>

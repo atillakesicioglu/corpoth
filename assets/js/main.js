@@ -3,16 +3,55 @@
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ========== Native CSS scroll-smooth'i hemen iptal et ==========
-     Tailwind 'scroll-smooth' class'i <html>'de aktif olabilir. JS smooth
-     scroll'u kendimiz yoneteceiz, dolayisiyla CSS'i kaldiriyoruz. */
+  /* ========== Native CSS scroll-smooth'i hemen iptal et ========== */
   document.documentElement.classList.remove('scroll-smooth');
   document.documentElement.style.scrollBehavior = 'auto';
+  document.documentElement.classList.remove('no-js');
+
+  /* ========== Smooth scroll (custom easing) ==========
+     Easing: easeOutQuart (basta hizli, sonda yavas) */
+  const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
+
+  let activeScrollId = 0;
+  const smoothScrollTo = (targetY, duration = 950) => {
+    if (reduceMotion) {
+      window.scrollTo(0, targetY);
+      return;
+    }
+    const startY = window.pageYOffset;
+    const distance = targetY - startY;
+    if (Math.abs(distance) < 4) return;
+
+    const myId = ++activeScrollId;
+    const startTs = performance.now();
+    const tick = (now) => {
+      if (myId !== activeScrollId) return; // baska bir scroll devraldi
+      const elapsed = now - startTs;
+      const progress = Math.min(1, elapsed / duration);
+      const eased   = easeOutQuart(progress);
+      window.scrollTo(0, startY + distance * eased);
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  };
+
+  const NAV_OFFSET = 88; // h-20 (80px) + 8px buffer
+
+  const scrollToHash = (hash, duration = 950) => {
+    if (!hash || hash === '#' || hash.length < 2) return false;
+    let target;
+    try { target = document.querySelector(hash); } catch (_) { return false; }
+    if (!target) return false;
+    const offsetTop = target.getBoundingClientRect().top + window.pageYOffset - NAV_OFFSET;
+    smoothScrollTo(offsetTop, duration);
+    return true;
+  };
 
   /* ========== Mobil tam ekran menu ========== */
   const navToggle  = document.getElementById('nav-toggle');
   const navIcon    = document.getElementById('nav-toggle-icon');
   const mobileMenu = document.getElementById('mobile-menu');
+  const mobileClose = document.getElementById('mobile-close');
 
   const setMobileMenu = (open) => {
     if (!mobileMenu) return;
@@ -31,8 +70,14 @@
       setMobileMenu(!mobileMenu.classList.contains('is-open'));
     });
 
-    mobileMenu.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => setMobileMenu(false));
+    if (mobileClose) {
+      mobileClose.addEventListener('click', () => setMobileMenu(false));
+    }
+
+    // Menu icindeki link/button'lara tiklaninca menuyu kapat
+    mobileMenu.querySelectorAll('a, button').forEach((el) => {
+      if (el.id === 'mobile-close') return;
+      el.addEventListener('click', () => setMobileMenu(false));
     });
 
     // ESC ile kapat
@@ -68,34 +113,8 @@
     decline && decline.addEventListener('click', () => dismiss('declined'));
   }
 
-  /* ========== Smooth scroll (custom easing) ==========
-     Easing: easeOutQuart (basta hizli, sonda yavas) */
-  const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
-
-  const smoothScrollTo = (targetY, duration = 950) => {
-    if (reduceMotion) {
-      window.scrollTo(0, targetY);
-      return;
-    }
-    const startY = window.pageYOffset;
-    const distance = targetY - startY;
-    if (Math.abs(distance) < 4) return;
-
-    const startTs = performance.now();
-    const tick = (now) => {
-      const elapsed = now - startTs;
-      const progress = Math.min(1, elapsed / duration);
-      const eased   = easeOutQuart(progress);
-      window.scrollTo(0, startY + distance * eased);
-      if (progress < 1) requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
-  };
-
-  // Click handler - capture phase'de calistir, herhangi bir parent
-  // stopPropagation yapsa bile bizim handler garanti tetiklenir.
+  /* ========== Smooth scroll click handler (capture phase) ========== */
   const onAnchorClick = (e) => {
-    // Modifier tuslari (Ctrl/Cmd/Shift/Alt) veya orta-tikla ile yeni sekmede acmaya izin ver
     if (e.defaultPrevented) return;
     if (e.button !== undefined && e.button !== 0) return;
     if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
@@ -106,14 +125,14 @@
     const href = a.getAttribute('href');
     if (!href) return;
 
-    // Ayni sayfa hash linki mi?
     let hash = '';
     if (href.startsWith('#')) {
       hash = href;
     } else if (href.startsWith('/#')) {
       hash = href.substring(1);
     } else {
-      return; // baska bir sayfaya gidiyorsa karismayalim
+      // Farkli sayfa - dokunmuyoruz
+      return;
     }
 
     if (hash === '#' || hash.length < 2) return;
@@ -125,19 +144,110 @@
     e.preventDefault();
     e.stopPropagation();
 
-    const navHeight = 80; // h-20
-    const offsetTop = target.getBoundingClientRect().top + window.pageYOffset - (navHeight + 8);
+    // Mobil menu acik ise once kapat, sonra scroll
+    const wasMenuOpen = mobileMenu && mobileMenu.classList.contains('is-open');
+    if (wasMenuOpen) setMobileMenu(false);
 
-    smoothScrollTo(offsetTop, 950);
+    const doScroll = () => {
+      const offsetTop = target.getBoundingClientRect().top + window.pageYOffset - NAV_OFFSET;
+      smoothScrollTo(offsetTop, 950);
+      if (history.pushState) {
+        history.pushState(null, '', hash);
+      }
+    };
 
-    if (history.pushState) {
-      history.pushState(null, '', hash);
+    if (wasMenuOpen) {
+      // Mobil menu animasyonu bitsin (CSS .35s)
+      setTimeout(doScroll, 360);
+    } else {
+      doScroll();
     }
   };
 
   document.addEventListener('click', onAnchorClick, true); // capture
-  // Touch cihazlar icin ek garanti (bazi tarayicilarda click delay olabilir)
-  document.addEventListener('touchend', () => {}, { passive: true });
+
+  // Tarayici geri/ileri (popstate)
+  window.addEventListener('popstate', () => {
+    if (window.location.hash) scrollToHash(window.location.hash, 600);
+  });
+
+  // Sayfa load: URL'de hash varsa kendi smooth scroll ile git
+  if (window.location.hash) {
+    const initHash = window.location.hash;
+    // Browser'in default scroll'unu engelle
+    window.scrollTo(0, 0);
+    history.scrollRestoration && (history.scrollRestoration = 'manual');
+    window.addEventListener('load', () => {
+      setTimeout(() => scrollToHash(initHash, 800), 80);
+    });
+  }
+
+  /* ========== FAQ - JS-controlled height animation ========== */
+  document.querySelectorAll('[data-faq]').forEach((item) => {
+    const btn     = item.querySelector('.faq-summary');
+    const content = item.querySelector('.faq-content');
+    if (!btn || !content) return;
+
+    let busy = false;
+
+    const open = () => {
+      if (busy) return;
+      busy = true;
+      item.classList.add('is-open');
+      btn.setAttribute('aria-expanded', 'true');
+
+      if (reduceMotion) {
+        content.style.height = 'auto';
+        busy = false;
+        return;
+      }
+
+      const targetH = content.scrollHeight;
+      content.style.height = '0px';
+      // force reflow
+      void content.offsetHeight;
+      content.style.height = targetH + 'px';
+
+      const onEnd = (e) => {
+        if (e.propertyName !== 'height') return;
+        content.style.height = 'auto';
+        content.removeEventListener('transitionend', onEnd);
+        busy = false;
+      };
+      content.addEventListener('transitionend', onEnd);
+    };
+
+    const close = () => {
+      if (busy) return;
+      busy = true;
+      btn.setAttribute('aria-expanded', 'false');
+
+      if (reduceMotion) {
+        item.classList.remove('is-open');
+        content.style.height = '0px';
+        busy = false;
+        return;
+      }
+
+      const startH = content.scrollHeight;
+      content.style.height = startH + 'px';
+      void content.offsetHeight;
+      item.classList.remove('is-open');
+      content.style.height = '0px';
+
+      const onEnd = (e) => {
+        if (e.propertyName !== 'height') return;
+        content.removeEventListener('transitionend', onEnd);
+        busy = false;
+      };
+      content.addEventListener('transitionend', onEnd);
+    };
+
+    btn.addEventListener('click', () => {
+      if (item.classList.contains('is-open')) close();
+      else open();
+    });
+  });
 
   /* ========== Lead form (AJAX + animasyon) ========== */
   const form   = document.getElementById('lead-form');

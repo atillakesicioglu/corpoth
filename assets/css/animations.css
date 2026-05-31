@@ -63,6 +63,38 @@ body.cookie-visible #wa-fab {
   opacity: 1;
 }
 
+#mobile-menu .mobile-menu-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  border: 0;
+  background: rgba(0, 37, 85, 0.08);
+  color: #002555;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(.7) rotate(-90deg);
+  transition: background-color .25s ease, transform .35s cubic-bezier(.34, 1.56, .64, 1), opacity .3s ease;
+}
+#mobile-menu .mobile-menu-close .material-symbols-outlined {
+  font-size: 1.5rem;
+}
+#mobile-menu.is-open .mobile-menu-close {
+  opacity: 1;
+  transform: scale(1) rotate(0);
+  transition-delay: .15s;
+}
+#mobile-menu .mobile-menu-close:hover {
+  background: rgba(0, 37, 85, 0.15);
+  transform: scale(1.05) rotate(90deg);
+}
+
 #mobile-menu .mobile-menu-inner {
   position: relative;
   z-index: 1;
@@ -305,37 +337,39 @@ body.mobile-menu-open { overflow: hidden; }
 }
 
 /* =============================================================
-   FAQ - CSS-only smooth open/close (grid-template-rows trick)
+   FAQ - JS-controlled smooth open/close (div + button)
    ============================================================= */
-details.faq-item {
-  overflow: hidden;
+.faq-item {
+  position: relative;
 }
-details.faq-item summary {
+.faq-item .faq-summary {
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
   padding: 1.25rem 1.5rem;
-  list-style: none;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  font: inherit;
+  color: inherit;
   cursor: pointer;
-  user-select: none;
   transition: background-color .25s ease;
 }
 @media (min-width: 768px) {
-  details.faq-item summary { padding: 1.5rem; }
+  .faq-item .faq-summary { padding: 1.5rem; }
 }
-details.faq-item summary::-webkit-details-marker,
-details.faq-item summary::marker {
-  display: none;
-  content: '';
+.faq-item .faq-summary:hover { background: rgba(0, 37, 85, 0.03); }
+.faq-item .faq-summary:focus-visible {
+  outline: 2px solid #002555;
+  outline-offset: -2px;
 }
-details.faq-item summary:hover { background: rgba(0, 37, 85, 0.025); }
 
 .faq-question {
   font-weight: 600;
   color: #1b1c1c;
   font-size: 1rem;
-  padding-right: .5rem;
   flex: 1;
 }
 @media (min-width: 768px) { .faq-question { font-size: 1.125rem; } }
@@ -345,39 +379,33 @@ details.faq-item summary:hover { background: rgba(0, 37, 85, 0.025); }
   flex-shrink: 0;
   transition: transform .35s cubic-bezier(.22, .61, .36, 1);
 }
-details.faq-item[open] .faq-toggle {
-  transform: rotate(45deg);
-}
+.faq-item.is-open .faq-toggle { transform: rotate(45deg); }
 
-/* Grid-row trick - calisan en temiz CSS-only smooth animasyon */
 .faq-content {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows .42s cubic-bezier(.22, .61, .36, 1);
-}
-details.faq-item[open] .faq-content {
-  grid-template-rows: 1fr;
+  height: 0;
+  overflow: hidden;
+  transition: height .42s cubic-bezier(.22, .61, .36, 1);
 }
 .faq-content-inner {
-  overflow: hidden;
-  padding: 0 1.25rem;
+  padding: 0 1.25rem 1.25rem;
   color: #43474f;
   line-height: 1.7;
   opacity: 0;
-  transition: opacity .35s ease, padding .35s ease;
+  transform: translateY(-4px);
+  transition: opacity .35s ease, transform .35s ease;
 }
 @media (min-width: 768px) {
-  .faq-content-inner { padding: 0 1.5rem; }
+  .faq-content-inner { padding: 0 1.5rem 1.5rem; }
 }
-details.faq-item[open] .faq-content-inner {
+.faq-item.is-open .faq-content-inner {
   opacity: 1;
-  padding-top: 0;
-  padding-bottom: 1.25rem;
+  transform: translateY(0);
   transition-delay: .12s;
 }
-@media (min-width: 768px) {
-  details.faq-item[open] .faq-content-inner { padding-bottom: 1.5rem; }
-}
+
+/* JS yoksa fallback - hepsi acik gozuksun */
+.no-js .faq-content { height: auto !important; }
+.no-js .faq-content-inner { opacity: 1 !important; transform: none !important; }
 
 /* ---- Parallax ---- */
 [data-parallax] { will-change: transform; }
@@ -396,7 +424,7 @@ details.faq-item[open] .faq-content-inner {
   .footer-link,
   .footer-link .footer-icon,
   .ref-logo-pill,
-  details.faq-item summary,
+  .faq-item .faq-summary,
   .faq-content,
   .faq-content-inner,
   .faq-toggle {
@@ -405,6 +433,6 @@ details.faq-item[open] .faq-content-inner {
     transition: none !important;
     animation: none !important;
   }
-  details.faq-item[open] .faq-content { grid-template-rows: 1fr !important; }
+  .faq-item.is-open .faq-content { height: auto !important; }
   #wa-fab { transition: none !important; }
 }

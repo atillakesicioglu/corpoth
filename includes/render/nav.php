@@ -34,6 +34,9 @@ $navLinks = [
 <!-- Tam ekran mobil overlay menu -->
 <div id="mobile-menu" class="md:hidden" aria-hidden="true">
   <div class="mobile-menu-bg"></div>
+  <button type="button" id="mobile-close" class="mobile-menu-close" aria-label="Menüyü kapat">
+    <span class="material-symbols-outlined">close</span>
+  </button>
   <nav class="mobile-menu-inner" aria-label="Mobil navigasyon">
     <a href="<?= $prefix ?>#home" class="mobile-logo" aria-label="Corpoth Anasayfa">
       <img src="/assets/images/corpoth-logo.png" alt="CORPOTH" class="h-14 w-auto"/>

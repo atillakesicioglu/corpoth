@@ -23,7 +23,7 @@ $contactPhone = setting('contact_phone');
 $contactEmail = setting('contact_email');
 ?>
 <!DOCTYPE html>
-<html class="scroll-smooth" lang="tr">
+<html class="scroll-smooth no-js" lang="tr">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -138,8 +138,13 @@ $contactEmail = setting('contact_email');
   }
   .skip-link:focus { left: 0; }
 </style>
-<link rel="stylesheet" href="/assets/css/site.css"/>
-<link rel="stylesheet" href="/assets/css/animations.css"/>
+<?php
+$assetRoot = __DIR__ . '/../../assets';
+$cssV = @filemtime($assetRoot . '/css/animations.css') ?: time();
+$siteV = @filemtime($assetRoot . '/css/site.css') ?: $cssV;
+?>
+<link rel="stylesheet" href="/assets/css/site.css?v=<?= $siteV ?>"/>
+<link rel="stylesheet" href="/assets/css/animations.css?v=<?= $cssV ?>"/>
 
 <?php
 // Schema.org JSON-LD
