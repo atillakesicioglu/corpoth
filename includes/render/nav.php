@@ -8,50 +8,36 @@
 
 $current = $current_page ?? 'home';
 
-// Ana menu yapisi - flat link veya dropdown
-// type: link | dropdown
-// dropdown items: icon, label, href, desc
-$navItems = [
-    [
-        'type'  => 'link',
-        'key'   => 'home',
-        'label' => 'Anasayfa',
-        'href'  => '/',
-    ],
-    [
-        'type'  => 'link',
-        'key'   => 'service',
-        'label' => 'Hizmet',
-        'href'  => '/hizmet.php',
-    ],
-    [
-        'type'    => 'dropdown',
-        'key'     => 'corporate',
-        'label'   => 'Kurumsal',
-        'children_keys' => ['about', 'team', 'references'],
-        'items'   => [
-            ['icon' => 'corporate_fare', 'label' => 'Hakkımızda',  'href' => '/hakkimizda.php', 'desc' => 'Misyonumuz, vizyonumuz, değerlerimiz', 'key' => 'about'],
-            ['icon' => 'groups',         'label' => 'Ekip',        'href' => '/ekip.php',       'desc' => 'Kurucu ve uzman kadromuz',       'key' => 'team'],
-            ['icon' => 'apartment',      'label' => 'Referanslar', 'href' => '/referanslar.php','desc' => 'Birlikte çalıştığımız markalar', 'key' => 'references'],
+// DB'den nav menusu (varsa). Fallback: hardcoded array.
+$navItems = function_exists('nav_tree') ? nav_tree() : null;
+if (!$navItems) {
+    $navItems = [
+        ['type'  => 'link',     'key'   => 'home',     'label' => 'Anasayfa',  'href'  => '/'],
+        ['type'  => 'link',     'key'   => 'service',  'label' => 'Hizmet',    'href'  => '/hizmet.php'],
+        [
+            'type'    => 'dropdown',
+            'key'     => 'corporate',
+            'label'   => 'Kurumsal',
+            'children_keys' => ['about', 'team', 'references'],
+            'items'   => [
+                ['icon' => 'corporate_fare', 'label' => 'Hakkımızda',  'href' => '/hakkimizda.php', 'desc' => 'Misyonumuz, vizyonumuz, değerlerimiz', 'key' => 'about'],
+                ['icon' => 'groups',         'label' => 'Ekip',        'href' => '/ekip.php',       'desc' => 'Kurucu ve uzman kadromuz',       'key' => 'team'],
+                ['icon' => 'apartment',      'label' => 'Referanslar', 'href' => '/referanslar.php','desc' => 'Birlikte çalıştığımız markalar', 'key' => 'references'],
+            ],
         ],
-    ],
-    [
-        'type'    => 'dropdown',
-        'key'     => 'resources',
-        'label'   => 'Bilgi',
-        'children_keys' => ['blog', 'faq'],
-        'items'   => [
-            ['icon' => 'article', 'label' => 'Blog', 'href' => '/blog.php', 'desc' => 'İçgörü ve uzman yazıları', 'key' => 'blog'],
-            ['icon' => 'help',    'label' => 'SSS',  'href' => '/sss.php',  'desc' => 'Sıkça sorulan sorular',  'key' => 'faq'],
+        [
+            'type'    => 'dropdown',
+            'key'     => 'resources',
+            'label'   => 'Bilgi',
+            'children_keys' => ['blog', 'faq'],
+            'items'   => [
+                ['icon' => 'article', 'label' => 'Blog', 'href' => '/blog.php', 'desc' => 'İçgörü ve uzman yazıları', 'key' => 'blog'],
+                ['icon' => 'help',    'label' => 'SSS',  'href' => '/sss.php',  'desc' => 'Sıkça sorulan sorular',  'key' => 'faq'],
+            ],
         ],
-    ],
-    [
-        'type'  => 'link',
-        'key'   => 'contact',
-        'label' => 'İletişim',
-        'href'  => '/iletisim.php',
-    ],
-];
+        ['type'  => 'link',     'key'   => 'contact',  'label' => 'İletişim',  'href'  => '/iletisim.php'],
+    ];
+}
 
 $isActive = function ($item) use ($current) {
     if ($item['type'] === 'link') {

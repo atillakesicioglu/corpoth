@@ -26,11 +26,13 @@ require __DIR__ . '/includes/render/head.php';
 
 <main id="main" class="pt-20">
   <?php
-  $hero_eyebrow  = $page['hero_eyebrow']  ?? 'Hizmet';
-  $hero_title    = $page['title']         ?? 'Kurumsal Omurga Terapisi';
-  $hero_subtitle = $page['hero_subtitle'] ?? 'Çalışanlarınızın masasından kalkmadan, ofise gelen profesyonel terapi hizmeti.';
-  $hero_image    = $page['hero_image']    ?? null;
-  $breadcrumbs   = [['label' => 'Hizmet']];
+  $hero_eyebrow         = $page['hero_eyebrow']         ?? 'Hizmet';
+  $hero_title           = $page['title']                ?? 'Kurumsal Omurga Terapisi';
+  $hero_subtitle        = $page['hero_subtitle']        ?? 'Çalışanlarınızın masasından kalkmadan, ofise gelen profesyonel terapi hizmeti.';
+  $hero_image           = $page['hero_image']           ?? null;
+  $hero_overlay_opacity = $page['hero_overlay_opacity'] ?? 50;
+  $hero_blur            = $page['hero_blur']            ?? 0;
+  $breadcrumbs          = [['label' => 'Hizmet']];
   require __DIR__ . '/includes/render/page_hero.php';
   ?>
 
@@ -40,16 +42,6 @@ require __DIR__ . '/includes/render/head.php';
   <?php require __DIR__ . '/includes/render/process.php'; ?>
   <?php require __DIR__ . '/includes/render/why.php'; ?>
   <?php require __DIR__ . '/includes/render/scenarios.php'; ?>
-
-  <?php if (!empty($page['content_html'])): ?>
-  <section class="py-16 md:py-20 px-6 md:px-12 bg-surface-container-low">
-    <div class="max-w-3xl mx-auto" data-animate="fade-up">
-      <article class="blog-prose">
-        <?= safe_html($page['content_html']) ?>
-      </article>
-    </div>
-  </section>
-  <?php endif; ?>
 
   <?php require __DIR__ . '/includes/render/cta_band.php'; ?>
 </main>

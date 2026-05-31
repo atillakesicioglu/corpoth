@@ -21,7 +21,7 @@ $testis = function_exists('testimonials_active') ? testimonials_active() : [];
   <?php
   $hero_eyebrow  = 'REFERANSLAR';
   $hero_title    = 'Birlikte çalıştığımız markalar';
-  $hero_subtitle = 'Türkiye''nin önde gelen kurumlarına bedensel esenlik standardı sunuyoruz.';
+  $hero_subtitle = "Türkiye'nin önde gelen kurumlarına bedensel esenlik standardı sunuyoruz.";
   $breadcrumbs   = [['label' => 'Referanslar']];
   require __DIR__ . '/includes/render/page_hero.php';
   ?>

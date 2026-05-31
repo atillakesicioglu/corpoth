@@ -550,6 +550,33 @@ body.mobile-menu-open { overflow: hidden; }
   pointer-events: none;
 }
 
+/* Image-backed hero */
+.page-hero-image {
+  --hero-blur: 0px;
+  --hero-overlay-alpha: 0.5;
+  background: #0a1428;
+}
+.page-hero-image .page-hero-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(var(--hero-blur));
+  transform: scale(1.05);
+  z-index: 0;
+}
+.page-hero-image .page-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg,
+      rgba(0, 37, 85, calc(var(--hero-overlay-alpha) * 1.1)) 0%,
+      rgba(0, 0, 0, var(--hero-overlay-alpha)) 60%,
+      rgba(0, 0, 0, calc(var(--hero-overlay-alpha) * 0.9)) 100%);
+  z-index: 1;
+}
+
 /* =============================================================
    Breadcrumb
    ============================================================= */

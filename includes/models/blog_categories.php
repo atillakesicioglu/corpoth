@@ -5,19 +5,34 @@
 
 function blog_cat_active(): array
 {
-    return db()->query('SELECT * FROM blog_categories WHERE is_active = 1 ORDER BY sort_order, name')->fetchAll();
+    try {
+        return db()->query('SELECT * FROM blog_categories WHERE is_active = 1 ORDER BY sort_order, name')->fetchAll();
+    } catch (Throwable $e) {
+        error_log('blog_cat_active: ' . $e->getMessage());
+        return [];
+    }
 }
 
 function blog_cat_all(): array
 {
-    return db()->query('SELECT * FROM blog_categories ORDER BY sort_order, name')->fetchAll();
+    try {
+        return db()->query('SELECT * FROM blog_categories ORDER BY sort_order, name')->fetchAll();
+    } catch (Throwable $e) {
+        error_log('blog_cat_all: ' . $e->getMessage());
+        return [];
+    }
 }
 
 function blog_cat_get_by_slug(string $slug): ?array
 {
-    $stmt = db()->prepare('SELECT * FROM blog_categories WHERE slug = ? LIMIT 1');
-    $stmt->execute([$slug]);
-    return $stmt->fetch() ?: null;
+    try {
+        $stmt = db()->prepare('SELECT * FROM blog_categories WHERE slug = ? LIMIT 1');
+        $stmt->execute([$slug]);
+        return $stmt->fetch() ?: null;
+    } catch (Throwable $e) {
+        error_log('blog_cat_get_by_slug: ' . $e->getMessage());
+        return null;
+    }
 }
 
 function blog_cat_get(int $id): ?array

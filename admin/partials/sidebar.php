@@ -33,6 +33,7 @@ $nav = [
         ['key' => 'blog-categories', 'icon' => 'sell',            'label' => 'Blog Kategorileri','href' => '/admin/blog-categories.php'],
     ]],
     ['group' => 'Yapılandırma', 'items' => [
+        ['key' => 'nav',          'icon' => 'menu_book',         'label' => 'Header Menüsü',     'href' => '/admin/nav.php'],
         ['key' => 'contact',      'icon' => 'call',              'label' => 'İletişim Bilgileri', 'href' => '/admin/contact.php'],
         ['key' => 'settings',     'icon' => 'settings',          'label' => 'Genel Ayarlar',     'href' => '/admin/settings.php'],
         ['key' => 'media',        'icon' => 'image',             'label' => 'Medya',             'href' => '/admin/media.php'],

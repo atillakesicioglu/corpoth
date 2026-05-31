@@ -17,16 +17,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && csrf_check()) {
     }
 
     $data = [
-        'slug'             => trim($_POST['slug'] ?? ''),
-        'title'            => trim($_POST['title'] ?? ''),
-        'hero_eyebrow'     => trim($_POST['hero_eyebrow'] ?? '') ?: null,
-        'hero_subtitle'    => trim($_POST['hero_subtitle'] ?? '') ?: null,
-        'hero_image'       => trim($_POST['hero_image'] ?? '') ?: null,
-        'content_html'     => $_POST['content_html'] ?? '',
-        'meta_title'       => trim($_POST['meta_title'] ?? '') ?: null,
-        'meta_description' => trim($_POST['meta_description'] ?? '') ?: null,
-        'og_image'         => trim($_POST['og_image'] ?? '') ?: null,
-        'is_active'        => !empty($_POST['is_active']),
+        'slug'                 => trim($_POST['slug'] ?? ''),
+        'title'                => trim($_POST['title'] ?? ''),
+        'hero_eyebrow'         => trim($_POST['hero_eyebrow'] ?? '') ?: null,
+        'hero_subtitle'        => trim($_POST['hero_subtitle'] ?? '') ?: null,
+        'hero_image'           => trim($_POST['hero_image'] ?? '') ?: null,
+        'hero_overlay_opacity' => max(0, min(100, (int)($_POST['hero_overlay_opacity'] ?? 50))),
+        'hero_blur'            => max(0, min(30,  (int)($_POST['hero_blur'] ?? 0))),
+        'content_html'         => $_POST['content_html'] ?? '',
+        'meta_title'           => trim($_POST['meta_title'] ?? '') ?: null,
+        'meta_description'     => trim($_POST['meta_description'] ?? '') ?: null,
+        'og_image'             => trim($_POST['og_image'] ?? '') ?: null,
+        'is_active'            => !empty($_POST['is_active']),
     ];
 
     if (!empty($_FILES['hero_image_upload']['name'])) {
@@ -91,16 +93,86 @@ $all = page_all();
     <span class="help">HTML kullanabilirsiniz. Etiketler: &lt;h2&gt;, &lt;h3&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;ol&gt;, &lt;li&gt;, &lt;strong&gt;, &lt;a&gt;, &lt;blockquote&gt;, &lt;img&gt;</span>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="field">
-      <label>Hero Görsel Yolu</label>
-      <input type="text" name="hero_image" value="<?= e($editing['hero_image'] ?? '') ?>" placeholder="/uploads/...">
+  <div class="card bg-slate-50 border-slate-200">
+    <h3 class="font-bold text-sm mb-3 flex items-center gap-2">
+      <span class="material-symbols-outlined text-base">image</span>
+      Hero Görseli
+    </h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="field">
+        <label>Görsel Yolu</label>
+        <input type="text" id="hero_image_input" name="hero_image" value="<?= e($editing['hero_image'] ?? '') ?>" placeholder="/uploads/...">
+      </div>
+      <div class="field">
+        <label>Yükle</label>
+        <input type="file" name="hero_image_upload" accept="image/*">
+      </div>
     </div>
-    <div class="field">
-      <label>Hero Görsel Yükle</label>
-      <input type="file" name="hero_image_upload" accept="image/*">
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+      <div class="field">
+        <label class="flex items-center justify-between">
+          <span>Karanlık Opaklık</span>
+          <span class="text-xs text-slate-500">
+            <span id="opacity_val"><?= (int)($editing['hero_overlay_opacity'] ?? 50) ?></span>%
+          </span>
+        </label>
+        <input type="range" id="opacity_slider" name="hero_overlay_opacity" min="0" max="100" step="5" value="<?= (int)($editing['hero_overlay_opacity'] ?? 50) ?>" class="w-full">
+        <span class="help">0% şeffaf, 100% tamamen siyah. Yazıların okunabilirliği için 40-60 önerilir.</span>
+      </div>
+      <div class="field">
+        <label class="flex items-center justify-between">
+          <span>Bulanıklık (blur)</span>
+          <span class="text-xs text-slate-500">
+            <span id="blur_val"><?= (int)($editing['hero_blur'] ?? 0) ?></span>px
+          </span>
+        </label>
+        <input type="range" id="blur_slider" name="hero_blur" min="0" max="30" step="1" value="<?= (int)($editing['hero_blur'] ?? 0) ?>" class="w-full">
+        <span class="help">0 keskin, 30 çok bulanık. 4-12 arası modern bir his verir.</span>
+      </div>
+    </div>
+
+    <!-- Canlı önizleme -->
+    <div class="mt-4">
+      <label class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 block">Canlı Önizleme</label>
+      <div id="hero_preview" class="relative w-full h-48 md:h-56 rounded-lg overflow-hidden border border-slate-300 bg-slate-200 flex items-end p-5">
+        <div id="hero_preview_img" class="absolute inset-0 bg-cover bg-center transition-all" style="background-image: url('<?= e($editing['hero_image'] ?? '') ?>'); filter: blur(<?= (int)($editing['hero_blur'] ?? 0) ?>px); transform: scale(1.05);"></div>
+        <div id="hero_preview_overlay" class="absolute inset-0 transition-all" style="background: linear-gradient(180deg, rgba(0,37,85,<?= ((int)($editing['hero_overlay_opacity'] ?? 50)/100*1.1) ?>), rgba(0,0,0,<?= (int)($editing['hero_overlay_opacity'] ?? 50)/100 ?>));"></div>
+        <div class="relative z-10 text-white">
+          <div class="text-xs uppercase tracking-widest opacity-80 mb-1"><?= e($editing['hero_eyebrow'] ?? 'EYEBROW') ?></div>
+          <div class="text-2xl font-bold leading-tight"><?= e($editing['title'] ?? 'Başlık Önizleme') ?></div>
+        </div>
+      </div>
     </div>
   </div>
+
+  <script>
+    (function(){
+      var imgI = document.getElementById('hero_image_input');
+      var oS   = document.getElementById('opacity_slider');
+      var bS   = document.getElementById('blur_slider');
+      var oV   = document.getElementById('opacity_val');
+      var bV   = document.getElementById('blur_val');
+      var pImg = document.getElementById('hero_preview_img');
+      var pOv  = document.getElementById('hero_preview_overlay');
+      if (!oS) return;
+      function refresh(){
+        var o = parseInt(oS.value, 10) / 100;
+        var b = parseInt(bS.value, 10);
+        oV.textContent = oS.value;
+        bV.textContent = bS.value;
+        if (pImg) {
+          pImg.style.filter = 'blur(' + b + 'px)';
+          if (imgI && imgI.value) pImg.style.backgroundImage = "url('" + imgI.value.replace(/'/g, "\\'") + "')";
+        }
+        if (pOv) pOv.style.background = 'linear-gradient(180deg, rgba(0,37,85,' + (o*1.1).toFixed(2) + '), rgba(0,0,0,' + o.toFixed(2) + '))';
+      }
+      oS.addEventListener('input', refresh);
+      bS.addEventListener('input', refresh);
+      if (imgI) imgI.addEventListener('input', refresh);
+    })();
+  </script>
 
   <details class="card">
     <summary class="font-semibold cursor-pointer">SEO Meta</summary>

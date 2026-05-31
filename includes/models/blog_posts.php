@@ -8,34 +8,44 @@
  */
 function blog_published(int $page = 1, int $perPage = 12, ?int $categoryId = null): array
 {
-    $page = max(1, $page);
-    $offset = ($page - 1) * $perPage;
-    $sql = 'SELECT p.*, c.name AS category_name, c.slug AS category_slug
-            FROM blog_posts p
-            LEFT JOIN blog_categories c ON p.category_id = c.id
-            WHERE p.status = "published" AND (p.published_at IS NULL OR p.published_at <= NOW())';
-    $params = [];
-    if ($categoryId) {
-        $sql .= ' AND p.category_id = ?';
-        $params[] = $categoryId;
+    try {
+        $page = max(1, $page);
+        $offset = ($page - 1) * $perPage;
+        $sql = 'SELECT p.*, c.name AS category_name, c.slug AS category_slug
+                FROM blog_posts p
+                LEFT JOIN blog_categories c ON p.category_id = c.id
+                WHERE p.status = "published" AND (p.published_at IS NULL OR p.published_at <= NOW())';
+        $params = [];
+        if ($categoryId) {
+            $sql .= ' AND p.category_id = ?';
+            $params[] = $categoryId;
+        }
+        $sql .= ' ORDER BY p.published_at DESC, p.id DESC LIMIT ' . (int)$perPage . ' OFFSET ' . (int)$offset;
+        $stmt = db()->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll();
+    } catch (Throwable $e) {
+        error_log('blog_published: ' . $e->getMessage());
+        return [];
     }
-    $sql .= ' ORDER BY p.published_at DESC, p.id DESC LIMIT ' . (int)$perPage . ' OFFSET ' . (int)$offset;
-    $stmt = db()->prepare($sql);
-    $stmt->execute($params);
-    return $stmt->fetchAll();
 }
 
 function blog_count(?int $categoryId = null): int
 {
-    $sql = 'SELECT COUNT(*) FROM blog_posts WHERE status = "published" AND (published_at IS NULL OR published_at <= NOW())';
-    $params = [];
-    if ($categoryId) {
-        $sql .= ' AND category_id = ?';
-        $params[] = $categoryId;
+    try {
+        $sql = 'SELECT COUNT(*) FROM blog_posts WHERE status = "published" AND (published_at IS NULL OR published_at <= NOW())';
+        $params = [];
+        if ($categoryId) {
+            $sql .= ' AND category_id = ?';
+            $params[] = $categoryId;
+        }
+        $stmt = db()->prepare($sql);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn();
+    } catch (Throwable $e) {
+        error_log('blog_count: ' . $e->getMessage());
+        return 0;
     }
-    $stmt = db()->prepare($sql);
-    $stmt->execute($params);
-    return (int) $stmt->fetchColumn();
 }
 
 /**
@@ -43,14 +53,19 @@ function blog_count(?int $categoryId = null): int
  */
 function blog_featured(int $limit = 3): array
 {
-    $stmt = db()->prepare('SELECT p.*, c.name AS category_name, c.slug AS category_slug
-                           FROM blog_posts p
-                           LEFT JOIN blog_categories c ON p.category_id = c.id
-                           WHERE p.status = "published" AND (p.published_at IS NULL OR p.published_at <= NOW())
-                           ORDER BY p.published_at DESC, p.id DESC
-                           LIMIT ' . (int)$limit);
-    $stmt->execute();
-    return $stmt->fetchAll();
+    try {
+        $stmt = db()->prepare('SELECT p.*, c.name AS category_name, c.slug AS category_slug
+                               FROM blog_posts p
+                               LEFT JOIN blog_categories c ON p.category_id = c.id
+                               WHERE p.status = "published" AND (p.published_at IS NULL OR p.published_at <= NOW())
+                               ORDER BY p.published_at DESC, p.id DESC
+                               LIMIT ' . (int)$limit);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    } catch (Throwable $e) {
+        error_log('blog_featured: ' . $e->getMessage());
+        return [];
+    }
 }
 
 /**
@@ -58,12 +73,17 @@ function blog_featured(int $limit = 3): array
  */
 function blog_get_by_slug(string $slug): ?array
 {
-    $stmt = db()->prepare('SELECT p.*, c.name AS category_name, c.slug AS category_slug
-                           FROM blog_posts p
-                           LEFT JOIN blog_categories c ON p.category_id = c.id
-                           WHERE p.slug = ? LIMIT 1');
-    $stmt->execute([$slug]);
-    return $stmt->fetch() ?: null;
+    try {
+        $stmt = db()->prepare('SELECT p.*, c.name AS category_name, c.slug AS category_slug
+                               FROM blog_posts p
+                               LEFT JOIN blog_categories c ON p.category_id = c.id
+                               WHERE p.slug = ? LIMIT 1');
+        $stmt->execute([$slug]);
+        return $stmt->fetch() ?: null;
+    } catch (Throwable $e) {
+        error_log('blog_get_by_slug: ' . $e->getMessage());
+        return null;
+    }
 }
 
 function blog_get(int $id): ?array

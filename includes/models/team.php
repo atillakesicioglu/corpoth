@@ -5,19 +5,34 @@
 
 function team_active(): array
 {
-    return db()->query('SELECT * FROM team_members WHERE is_active = 1 ORDER BY sort_order, id')->fetchAll();
+    try {
+        return db()->query('SELECT * FROM team_members WHERE is_active = 1 ORDER BY sort_order, id')->fetchAll();
+    } catch (Throwable $e) {
+        error_log('team_active: ' . $e->getMessage());
+        return [];
+    }
 }
 
 function team_all(): array
 {
-    return db()->query('SELECT * FROM team_members ORDER BY sort_order, id')->fetchAll();
+    try {
+        return db()->query('SELECT * FROM team_members ORDER BY sort_order, id')->fetchAll();
+    } catch (Throwable $e) {
+        error_log('team_all: ' . $e->getMessage());
+        return [];
+    }
 }
 
 function team_get_by_slug(string $slug): ?array
 {
-    $stmt = db()->prepare('SELECT * FROM team_members WHERE slug = ? LIMIT 1');
-    $stmt->execute([$slug]);
-    return $stmt->fetch() ?: null;
+    try {
+        $stmt = db()->prepare('SELECT * FROM team_members WHERE slug = ? LIMIT 1');
+        $stmt->execute([$slug]);
+        return $stmt->fetch() ?: null;
+    } catch (Throwable $e) {
+        error_log('team_get_by_slug: ' . $e->getMessage());
+        return null;
+    }
 }
 
 function team_get(int $id): ?array
