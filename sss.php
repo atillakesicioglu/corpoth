@@ -17,10 +17,12 @@ require __DIR__ . '/includes/render/head.php';
 
 <main id="main" class="pt-20">
   <?php
-  $hero_eyebrow  = 'BİLGİ';
-  $hero_title    = 'Sıkça Sorulan Sorular';
-  $hero_subtitle = 'En çok merak edilen konular bir arada. Aradığınızı bulamazsanız bize iletin.';
-  $breadcrumbs   = [['label' => 'SSS']];
+  extract(page_hero_load('sss', [
+    'hero_eyebrow'  => 'BİLGİ',
+    'hero_title'    => 'Sıkça Sorulan Sorular',
+    'hero_subtitle' => 'En çok merak edilen konular bir arada. Aradığınızı bulamazsanız bize iletin.',
+  ]));
+  $breadcrumbs = [['label' => 'SSS']];
   require __DIR__ . '/includes/render/page_hero.php';
   ?>
 

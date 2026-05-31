@@ -16,10 +16,12 @@ require __DIR__ . '/includes/render/head.php';
 
 <main id="main" class="pt-20">
   <?php
-  $hero_eyebrow  = 'EKİBİMİZ';
-  $hero_title    = 'Uzman ekibimizle tanışın';
-  $hero_subtitle = 'Sertifikalı terapistlerimiz; kurumsal deneyim, manuel terapi uzmanlığı ve yenilikçi yaklaşımlarıyla şirketinize değer katar.';
-  $breadcrumbs   = [['label' => 'Ekip']];
+  extract(page_hero_load('ekip', [
+    'hero_eyebrow'  => 'EKİBİMİZ',
+    'hero_title'    => 'Uzman ekibimizle tanışın',
+    'hero_subtitle' => 'Sertifikalı terapistlerimiz; kurumsal deneyim, manuel terapi uzmanlığı ve yenilikçi yaklaşımlarıyla şirketinize değer katar.',
+  ]));
+  $breadcrumbs = [['label' => 'Ekip']];
   require __DIR__ . '/includes/render/page_hero.php';
   ?>
 

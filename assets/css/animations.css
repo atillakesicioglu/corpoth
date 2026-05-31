@@ -607,6 +607,22 @@ body.mobile-menu-open { overflow: hidden; }
 .breadcrumb-sep { color: #cbd5e1; }
 .breadcrumb-sep .material-symbols-outlined { font-size: 1rem; }
 
+/* Koyu arka planli hero (fotograf + overlay) */
+.page-hero-image .breadcrumb li a {
+  color: rgba(255, 255, 255, 0.78);
+}
+.page-hero-image .breadcrumb li a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+.page-hero-image .breadcrumb li[aria-current="page"] span {
+  color: #fff;
+  font-weight: 600;
+}
+.page-hero-image .breadcrumb-sep {
+  color: rgba(255, 255, 255, 0.45);
+}
+
 /* =============================================================
    CTA band (alt CTA seridi)
    ============================================================= */

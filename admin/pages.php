@@ -73,7 +73,7 @@ $all = page_all();
     <div class="field">
       <label>Slug (URL) <span class="text-red-500">*</span></label>
       <input type="text" name="slug" required pattern="[a-z0-9\-]+" value="<?= e($editing['slug'] ?? '') ?>" placeholder="hakkimizda">
-      <span class="help">Sadece kucuk harf, rakam ve tire. URL'nin son parcasi.</span>
+      <span class="help">Sadece küçük harf, rakam ve tire. Hero ayarları: <code>hakkimizda</code>, <code>hizmet-detay</code>, <code>ekip</code>, <code>referanslar</code>, <code>sss</code>, <code>iletisim</code>, <code>blog</code></span>
     </div>
   </div>
 
@@ -201,7 +201,7 @@ $all = page_all();
     <button class="btn btn-primary" type="submit"><span class="material-symbols-outlined text-base">save</span> Kaydet</button>
     <a class="btn btn-ghost" href="/admin/pages.php">İptal</a>
     <?php if ($editing): ?>
-    <a class="btn btn-ghost" href="/<?= e($editing['slug']) ?>.php" target="_blank"><span class="material-symbols-outlined text-base">visibility</span> Önizle</a>
+    <a class="btn btn-ghost" href="<?= e(page_public_url($editing['slug'])) ?>" target="_blank"><span class="material-symbols-outlined text-base">visibility</span> Önizle</a>
     <?php endif; ?>
   </div>
 </form>
@@ -222,7 +222,7 @@ $all = page_all();
 <?php else: ?>
 
 <div class="flex justify-between items-center">
-  <p class="text-sm text-slate-600">Statik sayfaların metinlerini buradan düzenleyin (Hakkımızda, Hizmet detay vs.).</p>
+  <p class="text-sm text-slate-600">Sayfa hero görselleri ve metinleri buradan düzenlenir (Hakkımızda, Hizmet, Ekip, Referanslar, SSS, İletişim, Blog).</p>
   <a href="/admin/pages.php?new=1" class="btn btn-primary"><span class="material-symbols-outlined text-base">add</span> Yeni Sayfa</a>
 </div>
 
@@ -232,17 +232,19 @@ $all = page_all();
       <tr>
         <th class="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-600">Başlık</th>
         <th class="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-600">Slug</th>
+        <th class="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-600 hidden lg:table-cell">Sayfa</th>
         <th class="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-600">Durum</th>
         <th class="text-right px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-600">İşlem</th>
       </tr>
     </thead>
     <tbody class="divide-y divide-slate-100">
       <?php if (!$all): ?>
-        <tr><td colspan="4" class="text-center text-slate-500 py-8">Henüz sayfa yok.</td></tr>
+        <tr><td colspan="5" class="text-center text-slate-500 py-8">Henüz sayfa yok. Migration 0005 uygulanmamış olabilir.</td></tr>
       <?php else: foreach ($all as $p): ?>
       <tr>
         <td class="px-4 py-3 font-semibold"><?= e($p['title']) ?></td>
         <td class="px-4 py-3 text-sm text-slate-500"><code><?= e($p['slug']) ?></code></td>
+        <td class="px-4 py-3 text-sm text-slate-500 hidden lg:table-cell"><code><?= e(page_public_url($p['slug'])) ?></code></td>
         <td class="px-4 py-3">
           <?php if ($p['is_active']): ?>
             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">Aktif</span>

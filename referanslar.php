@@ -19,10 +19,12 @@ $testis = function_exists('testimonials_active') ? testimonials_active() : [];
 
 <main id="main" class="pt-20">
   <?php
-  $hero_eyebrow  = 'REFERANSLAR';
-  $hero_title    = 'Birlikte çalıştığımız markalar';
-  $hero_subtitle = "Türkiye'nin önde gelen kurumlarına bedensel esenlik standardı sunuyoruz.";
-  $breadcrumbs   = [['label' => 'Referanslar']];
+  extract(page_hero_load('referanslar', [
+    'hero_eyebrow'  => 'REFERANSLAR',
+    'hero_title'    => 'Birlikte çalıştığımız markalar',
+    'hero_subtitle' => "Türkiye'nin önde gelen kurumlarına bedensel esenlik standardı sunuyoruz.",
+  ]));
+  $breadcrumbs = [['label' => 'Referanslar']];
   require __DIR__ . '/includes/render/page_hero.php';
   ?>
 

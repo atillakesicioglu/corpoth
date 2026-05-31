@@ -25,13 +25,12 @@ require __DIR__ . '/includes/render/head.php';
 
 <main id="main" class="pt-20">
   <?php
-  $hero_eyebrow         = $page['hero_eyebrow']         ?? 'CORPOTH';
-  $hero_title           = $page['title']                ?? 'Hakkımızda';
-  $hero_subtitle        = $page['hero_subtitle']        ?? "Kurumsal bedensel esenlik konusunda Türkiye'nin önde gelen markalarına hizmet veriyoruz.";
-  $hero_image           = $page['hero_image']           ?? null;
-  $hero_overlay_opacity = $page['hero_overlay_opacity'] ?? 50;
-  $hero_blur            = $page['hero_blur']            ?? 0;
-  $breadcrumbs          = [['label' => 'Hakkımızda']];
+  extract(page_hero_load('hakkimizda', [
+    'hero_eyebrow'  => 'CORPOTH',
+    'hero_title'    => 'Hakkımızda',
+    'hero_subtitle' => "Kurumsal bedensel esenlik konusunda Türkiye'nin önde gelen markalarına hizmet veriyoruz.",
+  ]));
+  $breadcrumbs = [['label' => 'Hakkımızda']];
   require __DIR__ . '/includes/render/page_hero.php';
   ?>
 

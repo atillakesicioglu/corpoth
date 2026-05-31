@@ -27,10 +27,12 @@ $linkedin  = setting('contact_linkedin');
 
 <main id="main" class="pt-20">
   <?php
-  $hero_eyebrow  = 'İLETİŞİM';
-  $hero_title    = 'Birlikte çalışmaya hazırız';
-  $hero_subtitle = 'Şirketinize özel teklif hazırlayabilmemiz için formu doldurun veya doğrudan bizimle iletişime geçin. Genellikle 1 iş günü içinde size dönüş yapıyoruz.';
-  $breadcrumbs   = [['label' => 'İletişim']];
+  extract(page_hero_load('iletisim', [
+    'hero_eyebrow'  => 'İLETİŞİM',
+    'hero_title'    => 'Birlikte çalışmaya hazırız',
+    'hero_subtitle' => 'Şirketinize özel teklif hazırlayabilmemiz için formu doldurun veya doğrudan bizimle iletişime geçin. Genellikle 1 iş günü içinde size dönüş yapıyoruz.',
+  ]));
+  $breadcrumbs = [['label' => 'İletişim']];
   require __DIR__ . '/includes/render/page_hero.php';
   ?>
 

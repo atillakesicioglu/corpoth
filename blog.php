@@ -28,10 +28,17 @@ require __DIR__ . '/includes/render/head.php';
 
 <main id="main" class="pt-20">
   <?php
-  $hero_eyebrow  = 'BLOG';
-  $hero_title    = $cat ? e($cat['name']) : 'İçgörüler & uzman yazıları';
-  $hero_subtitle = $cat ? ($cat['description'] ?: '') : 'Kurumsal sağlık, ofis ergonomisi ve çalışan deneyimi üzerine düşünceler.';
-  $breadcrumbs   = $page_breadcrumb;
+  $heroOverrides = [];
+  if ($cat) {
+    $heroOverrides['hero_title']    = $cat['name'];
+    $heroOverrides['hero_subtitle'] = $cat['description'] ?: '';
+  }
+  extract(page_hero_load('blog', [
+    'hero_eyebrow'  => 'BLOG',
+    'hero_title'    => 'İçgörüler & uzman yazıları',
+    'hero_subtitle' => 'Kurumsal sağlık, ofis ergonomisi ve çalışan deneyimi üzerine düşünceler.',
+  ], $heroOverrides));
+  $breadcrumbs = $page_breadcrumb;
   require __DIR__ . '/includes/render/page_hero.php';
   ?>
 
