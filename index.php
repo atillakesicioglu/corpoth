@@ -1,10 +1,11 @@
 <?php
 require_once __DIR__ . '/includes/bootstrap.php';
 
-// Anasayfa icin SEO meta'larini settings'tan al
 $page_title       = setting('site_title');
 $page_description = setting('site_description');
 $page_canonical   = setting('canonical_url');
+$current_page     = 'home';
+$include_faq_schema = true;
 
 require __DIR__ . '/includes/render/head.php';
 ?>
@@ -21,7 +22,14 @@ require __DIR__ . '/includes/render/head.php';
   <?php require __DIR__ . '/includes/render/why.php'; ?>
   <?php require __DIR__ . '/includes/render/scenarios.php'; ?>
   <?php require __DIR__ . '/includes/render/testimonials.php'; ?>
-  <?php require __DIR__ . '/includes/render/faq.php'; ?>
+  <?php require __DIR__ . '/includes/render/blog_featured.php'; ?>
+  <?php
+  // SSS anasayfada sadece 5 limit + "Tum sorular" linki
+  $faq_limit = 5;
+  $faq_show_all_link = true;
+  require __DIR__ . '/includes/render/faq.php';
+  $faq_limit = null; $faq_show_all_link = false;
+  ?>
   <?php require __DIR__ . '/includes/render/references.php'; ?>
   <?php require __DIR__ . '/includes/render/contact.php'; ?>
 </main>

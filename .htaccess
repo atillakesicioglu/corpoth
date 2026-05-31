@@ -7,12 +7,22 @@ DirectoryIndex index.php index.html
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # HTTPS'e yonlendir
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
   # index.html cagrildiginda index.php'ye yonlendir (eski URL korunsun)
   RewriteRule ^index\.html$ /index.php [R=301,L]
 
-  # Trailing slash
-  RewriteCond %{HTTPS} !=on
-  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # Blog detay: /blog/{slug} -> /blog-detail.php?slug=...
+  RewriteRule ^blog/([a-z0-9][a-z0-9-]*)/?$ /blog-detail.php?slug=$1 [L,QSA]
+
+  # Ekip detay: /ekip/{slug} -> /ekip-detail.php?slug=...
+  RewriteRule ^ekip/([a-z0-9][a-z0-9-]*)/?$ /ekip-detail.php?slug=$1 [L,QSA]
+
+  # Sitemap.xml -> dinamik sitemap.php
+  RewriteRule ^sitemap\.xml$ /sitemap.php [L]
 </IfModule>
 
 # -------------------------------------------------------------

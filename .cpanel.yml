@@ -5,14 +5,25 @@ deployment:
 
     # Statik dosyalar
     - /bin/cp -rT assets   $DEPLOYPATH/assets
-    - /bin/cp index.php       $DEPLOYPATH/
-    - /bin/cp kvkk.php        $DEPLOYPATH/
-    - /bin/cp gizlilik.php    $DEPLOYPATH/
-    - /bin/cp submit-lead.php $DEPLOYPATH/
-    - /bin/cp install.php     $DEPLOYPATH/
-    - /bin/cp robots.txt      $DEPLOYPATH/
-    - /bin/cp sitemap.xml     $DEPLOYPATH/
-    - /bin/cp .htaccess       $DEPLOYPATH/
+    - /bin/cp index.php        $DEPLOYPATH/
+    - /bin/cp hizmet.php       $DEPLOYPATH/
+    - /bin/cp hakkimizda.php   $DEPLOYPATH/
+    - /bin/cp ekip.php         $DEPLOYPATH/
+    - /bin/cp ekip-detail.php  $DEPLOYPATH/
+    - /bin/cp referanslar.php  $DEPLOYPATH/
+    - /bin/cp sss.php          $DEPLOYPATH/
+    - /bin/cp iletisim.php     $DEPLOYPATH/
+    - /bin/cp blog.php         $DEPLOYPATH/
+    - /bin/cp blog-detail.php  $DEPLOYPATH/
+    - /bin/cp kvkk.php         $DEPLOYPATH/
+    - /bin/cp gizlilik.php     $DEPLOYPATH/
+    - /bin/cp submit-lead.php  $DEPLOYPATH/
+    - /bin/cp install.php      $DEPLOYPATH/
+    - /bin/cp robots.txt       $DEPLOYPATH/
+    - /bin/cp sitemap.php      $DEPLOYPATH/
+    - /bin/cp .htaccess        $DEPLOYPATH/
+    # Eski sitemap.xml kalmissa kaldir (sitemap.php artik dinamik olarak hizmet veriyor)
+    - /bin/rm -f $DEPLOYPATH/sitemap.xml || true
 
     # Includes (model + render + bootstrap + helpers)
     - /bin/mkdir -p $DEPLOYPATH/includes/models $DEPLOYPATH/includes/render

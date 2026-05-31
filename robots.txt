@@ -6,5 +6,6 @@ Disallow: /includes/
 Disallow: /uploads/
 Disallow: /db/
 Disallow: /submit-lead.php
+Disallow: /install.php
 
-Sitemap: https://www.corpoth.com/sitemap.xml
+Sitemap: https://www.corpoth.com/sitemap.php

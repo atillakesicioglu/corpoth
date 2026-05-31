@@ -19,6 +19,12 @@ $nav = [
         ['key' => 'testimonials', 'icon' => 'reviews',           'label' => 'Yorumlar',       'href' => '/admin/testimonials.php'],
         ['key' => 'faq',          'icon' => 'help',              'label' => 'SSS',            'href' => '/admin/faq.php'],
     ]],
+    ['group' => 'Sayfalar & Blog', 'items' => [
+        ['key' => 'pages',           'icon' => 'description',     'label' => 'Sayfa İçerikleri', 'href' => '/admin/pages.php'],
+        ['key' => 'team',            'icon' => 'badge',           'label' => 'Ekip Üyeleri',     'href' => '/admin/team.php'],
+        ['key' => 'blog-posts',      'icon' => 'article',         'label' => 'Blog Yazıları',    'href' => '/admin/blog-posts.php'],
+        ['key' => 'blog-categories', 'icon' => 'sell',            'label' => 'Blog Kategorileri','href' => '/admin/blog-categories.php'],
+    ]],
     ['group' => 'Yapılandırma', 'items' => [
         ['key' => 'contact',      'icon' => 'call',              'label' => 'İletişim Bilgileri', 'href' => '/admin/contact.php'],
         ['key' => 'settings',     'icon' => 'settings',          'label' => 'Genel Ayarlar',     'href' => '/admin/settings.php'],

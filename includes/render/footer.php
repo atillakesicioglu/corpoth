@@ -9,7 +9,7 @@ $about     = setting('footer_about');
 <footer class="w-full pt-16 pb-0 px-6 md:px-12" style="background:#002555">
   <div class="grid grid-cols-1 md:grid-cols-4 gap-12 max-w-screen-2xl mx-auto">
     <div class="col-span-1">
-      <a href="#home" class="inline-block mb-6 group">
+      <a href="/" class="inline-block mb-6 group">
         <img src="/assets/images/corpoth-logo-white.png" alt="CORPOTH" class="h-20 md:h-24 w-auto transition-transform duration-500 group-hover:scale-105"/>
       </a>
       <p class="text-blue-100 font-sans text-sm leading-relaxed max-w-xs">
@@ -17,13 +17,15 @@ $about     = setting('footer_about');
       </p>
     </div>
     <div>
-      <h5 class="font-bold text-white mb-6 font-sans text-sm uppercase tracking-wider">Hızlı Linkler</h5>
+      <h5 class="font-bold text-white mb-6 font-sans text-sm uppercase tracking-wider">Kurumsal</h5>
       <ul class="space-y-1">
-        <li><a class="footer-link" href="#service">Hizmetlerimiz</a></li>
-        <li><a class="footer-link" href="#why">Neden Biz?</a></li>
-        <li><a class="footer-link" href="#testimonials">Yorumlar</a></li>
-        <li><a class="footer-link" href="#faq">SSS</a></li>
-        <li><a class="footer-link" href="#references">Referanslar</a></li>
+        <li><a class="footer-link" href="/hakkimizda.php">Hakkımızda</a></li>
+        <li><a class="footer-link" href="/ekip.php">Ekip</a></li>
+        <li><a class="footer-link" href="/hizmet.php">Hizmet</a></li>
+        <li><a class="footer-link" href="/referanslar.php">Referanslar</a></li>
+        <li><a class="footer-link" href="/blog.php">Blog</a></li>
+        <li><a class="footer-link" href="/sss.php">SSS</a></li>
+        <li><a class="footer-link" href="/iletisim.php">İletişim</a></li>
       </ul>
     </div>
     <div>

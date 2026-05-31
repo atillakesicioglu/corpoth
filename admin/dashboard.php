@@ -10,6 +10,11 @@ if (!empty($_SESSION['must_change_password'])) {
 $stats   = leads_stats_summary();
 $recent  = leads_list([], 5, 0);
 
+$blogPublished = function_exists('blog_count') ? blog_count() : 0;
+$blogDrafts    = (int) db()->query('SELECT COUNT(*) FROM blog_posts WHERE status = "draft"')->fetchColumn();
+$teamCount     = function_exists('team_active') ? count(team_active()) : 0;
+$pagesCount    = (int) db()->query('SELECT COUNT(*) FROM pages WHERE is_active = 1')->fetchColumn();
+
 $pageTitle  = 'Panel';
 $activePage = 'dashboard';
 require __DIR__ . '/partials/header.php';
@@ -47,6 +52,25 @@ require __DIR__ . '/partials/header.php';
     <div class="v"><?= round(($stats['contacted'] + $stats['closed']) / max(1, $stats['total']) * 100) ?>%</div>
     <div class="l">Geri dönüş oranı</div>
   </div>
+</div>
+
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+  <a href="/admin/blog-posts.php" class="kpi hover:bg-slate-50 transition-colors">
+    <div class="v text-indigo-700"><?= (int) $blogPublished ?></div>
+    <div class="l">Yayında Blog Yazısı</div>
+  </a>
+  <a href="/admin/blog-posts.php" class="kpi hover:bg-slate-50 transition-colors">
+    <div class="v text-amber-700"><?= (int) $blogDrafts ?></div>
+    <div class="l">Taslak Blog</div>
+  </a>
+  <a href="/admin/team.php" class="kpi hover:bg-slate-50 transition-colors">
+    <div class="v text-rose-700"><?= (int) $teamCount ?></div>
+    <div class="l">Aktif Ekip Üyesi</div>
+  </a>
+  <a href="/admin/pages.php" class="kpi hover:bg-slate-50 transition-colors">
+    <div class="v text-cyan-700"><?= (int) $pagesCount ?></div>
+    <div class="l">Aktif Sayfa</div>
+  </a>
 </div>
 
 <div class="card">

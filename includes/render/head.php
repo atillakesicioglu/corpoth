@@ -148,15 +148,16 @@ $siteV = @filemtime($assetRoot . '/css/site.css') ?: $cssV;
 
 <?php
 // Schema.org JSON-LD
+$siteUrl = rtrim(setting('canonical_url', ''), '/');
 $jsonLd = [
     '@context' => 'https://schema.org',
     '@graph'   => [
         [
             '@type'       => 'Organization',
-            '@id'         => rtrim(setting('canonical_url', ''), '/') . '/#organization',
+            '@id'         => $siteUrl . '/#organization',
             'name'        => 'CORPOTH',
             'url'         => setting('canonical_url'),
-            'logo'        => rtrim(setting('canonical_url', ''), '/') . '/assets/images/corpoth-logo.png',
+            'logo'        => $siteUrl . '/assets/images/corpoth-logo.png',
             'sameAs'      => array_values(array_filter([
                 setting('contact_linkedin'),
             ])),
@@ -172,29 +173,70 @@ $jsonLd = [
         [
             '@type'       => 'Service',
             'serviceType' => 'Kurumsal Omurga Terapisi',
-            'provider'    => [ '@id' => rtrim(setting('canonical_url', ''), '/') . '/#organization' ],
+            'provider'    => [ '@id' => $siteUrl . '/#organization' ],
             'areaServed'  => ['Istanbul', 'Ankara', 'Izmir', 'Bursa', 'Kocaeli'],
             'description' => $siteDesc,
         ],
     ],
 ];
-$faqRows = function_exists('faq_active') ? faq_active() : [];
-if ($faqRows) {
-    $faqEntities = [];
-    foreach ($faqRows as $f) {
-        $faqEntities[] = [
-            '@type' => 'Question',
-            'name'  => $f['question'],
-            'acceptedAnswer' => [
-                '@type' => 'Answer',
-                'text'  => strip_tags($f['answer']),
-            ],
+
+// Sayfaya ozel breadcrumb JSON-LD (BreadcrumbList)
+if (!empty($page_breadcrumb) && is_array($page_breadcrumb)) {
+    $bcItems = [];
+    $pos = 1;
+    $bcItems[] = [
+        '@type'    => 'ListItem',
+        'position' => $pos++,
+        'name'     => 'Anasayfa',
+        'item'     => $siteUrl . '/',
+    ];
+    foreach ($page_breadcrumb as $c) {
+        $bcItems[] = [
+            '@type'    => 'ListItem',
+            'position' => $pos++,
+            'name'     => $c['label'] ?? '',
+            'item'     => !empty($c['href']) ? ($siteUrl . $c['href']) : null,
         ];
     }
     $jsonLd['@graph'][] = [
-        '@type'      => 'FAQPage',
-        'mainEntity' => $faqEntities,
+        '@type'           => 'BreadcrumbList',
+        'itemListElement' => array_values(array_filter($bcItems, function ($x) {
+            return !($x['position'] > 1 && empty($x['item']));
+        })),
     ];
+}
+
+// Sayfaya ozel ek schema (BlogPosting, AboutPage vs.) - $page_jsonld parametresi ile
+if (!empty($page_jsonld) && is_array($page_jsonld)) {
+    if (isset($page_jsonld['@type'])) {
+        $jsonLd['@graph'][] = $page_jsonld;
+    } else {
+        foreach ($page_jsonld as $entity) {
+            $jsonLd['@graph'][] = $entity;
+        }
+    }
+}
+
+// FAQ schema sadece anasayfada veya /sss sayfasinda
+if (!empty($include_faq_schema) && function_exists('faq_active')) {
+    $faqRows = faq_active();
+    if ($faqRows) {
+        $faqEntities = [];
+        foreach ($faqRows as $f) {
+            $faqEntities[] = [
+                '@type' => 'Question',
+                'name'  => $f['question'],
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text'  => strip_tags($f['answer']),
+                ],
+            ];
+        }
+        $jsonLd['@graph'][] = [
+            '@type'      => 'FAQPage',
+            'mainEntity' => $faqEntities,
+        ];
+    }
 }
 ?>
 <script type="application/ld+json"><?= json_encode($jsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?></script>

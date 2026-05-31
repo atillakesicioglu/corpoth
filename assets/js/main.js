@@ -74,11 +74,23 @@
       mobileClose.addEventListener('click', () => setMobileMenu(false));
     }
 
-    // Menu icindeki link/button'lara tiklaninca menuyu kapat
-    mobileMenu.querySelectorAll('a, button').forEach((el) => {
-      if (el.id === 'mobile-close') return;
+    // Mobil accordion (alt menuler)
+    mobileMenu.querySelectorAll('[data-mobile-acc]').forEach((acc) => {
+      const head = acc.querySelector('.mobile-acc-head');
+      if (!head) return;
+      head.addEventListener('click', (e) => {
+        e.stopPropagation();
+        acc.classList.toggle('is-open');
+      });
+    });
+
+    // Sadece anchor link / sub-item link tiklamasinda menuyu kapat
+    // (accordion head'lere dokunmuyoruz)
+    mobileMenu.querySelectorAll('a').forEach((el) => {
       el.addEventListener('click', () => setMobileMenu(false));
     });
+    const closeBtn = mobileMenu.querySelector('#mobile-close');
+    if (closeBtn) closeBtn.addEventListener('click', () => setMobileMenu(false));
 
     // ESC ile kapat
     document.addEventListener('keydown', (e) => {
@@ -87,6 +99,64 @@
       }
     });
   }
+
+  /* ========== Desktop dropdown nav ========== */
+  const dropdowns = document.querySelectorAll('[data-dropdown]');
+  dropdowns.forEach((dd) => {
+    const trigger = dd.querySelector('.nav-dropdown-trigger');
+    if (!trigger) return;
+
+    let hoverTimer = null;
+    const open  = () => {
+      clearTimeout(hoverTimer);
+      dropdowns.forEach((other) => { if (other !== dd) other.classList.remove('is-open'); });
+      dd.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+    };
+    const close = () => {
+      hoverTimer = setTimeout(() => {
+        dd.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+      }, 140);
+    };
+    const cancelClose = () => clearTimeout(hoverTimer);
+
+    dd.addEventListener('mouseenter', open);
+    dd.addEventListener('mouseleave', close);
+    dd.addEventListener('focusin',  cancelClose);
+    dd.addEventListener('focusin',  open);
+    dd.addEventListener('focusout', (e) => {
+      if (!dd.contains(e.relatedTarget)) close();
+    });
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isOpen = dd.classList.contains('is-open');
+      if (isOpen) {
+        dd.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+      } else {
+        open();
+      }
+    });
+  });
+
+  // Disari tiklayinca tum dropdownlari kapat
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('[data-dropdown]')) {
+      dropdowns.forEach((dd) => {
+        dd.classList.remove('is-open');
+        const t = dd.querySelector('.nav-dropdown-trigger');
+        if (t) t.setAttribute('aria-expanded', 'false');
+      });
+    }
+  });
+
+  // ESC ile dropdown kapansin
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      dropdowns.forEach((dd) => dd.classList.remove('is-open'));
+    }
+  });
 
   /* ========== Cookie banner ========== */
   const COOKIE_KEY = 'corpoth_cookie_consent_v1';

@@ -3,9 +3,13 @@
  * FAQ model.
  */
 
-function faq_active(): array
+function faq_active(?int $limit = null): array
 {
-    return db()->query('SELECT * FROM faq WHERE active = 1 ORDER BY sort_order, id')->fetchAll();
+    $sql = 'SELECT * FROM faq WHERE active = 1 ORDER BY sort_order, id';
+    if ($limit !== null && $limit > 0) {
+        $sql .= ' LIMIT ' . (int) $limit;
+    }
+    return db()->query($sql)->fetchAll();
 }
 
 function faq_all(): array
