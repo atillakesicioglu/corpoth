@@ -737,10 +737,15 @@ body.mobile-menu-open { overflow: hidden; }
   overflow: hidden;
 }
 .team-card-photo img { width: 100%; height: 100%; object-fit: cover; }
-.team-card-body { padding: 1.25rem 1rem 1.5rem; }
+.team-card-body { padding: 1.25rem 1rem .75rem; }
 .team-card-name { font-size: 1.05rem; font-weight: 700; color: #1b1c1c; margin: 0 0 .15rem; }
-.team-card-title { font-size: .85rem; color: #64748b; margin: 0 0 .85rem; }
-.team-card-social { display: inline-flex; gap: .5rem; }
+.team-card-title { font-size: .85rem; color: #64748b; margin: 0; }
+.team-card-social {
+  display: flex;
+  justify-content: center;
+  gap: .5rem;
+  padding: 0 1rem 1.25rem;
+}
 .team-card-social a {
   width: 34px; height: 34px;
   border-radius: 999px;
@@ -748,9 +753,11 @@ body.mobile-menu-open { overflow: hidden; }
   background: rgba(0, 37, 85, 0.08);
   color: #002555;
   transition: background-color .2s, transform .2s;
+  text-decoration: none;
 }
 .team-card-social a:hover { background: rgba(0, 37, 85, 0.16); transform: scale(1.08); }
 .team-card-social a .material-symbols-outlined { font-size: 1.05rem; }
+.team-card-social .team-social-svg { width: 1.05rem; height: 1.05rem; }
 
 /* Article (blog detail) prose */
 article.blog-prose {
