@@ -33,8 +33,9 @@ deployment:
     - /bin/mkdir -p $DEPLOYPATH/admin/partials $DEPLOYPATH/admin/assets
     - /bin/cp -rT admin $DEPLOYPATH/admin
 
-    # DB SQL dosyalari (kurulum icin)
-    - /bin/mkdir -p $DEPLOYPATH/db
+    # DB SQL dosyalari (kurulum + admin migrations)
+    # db/migrations/*.sql admin panelden tek tikla calistirilir.
+    - /bin/mkdir -p $DEPLOYPATH/db/migrations
     - /bin/cp -rT db $DEPLOYPATH/db
 
     # Uploads (yoksa olustur, varsa dokunma)

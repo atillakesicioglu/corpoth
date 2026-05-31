@@ -10,15 +10,40 @@ if (!empty($_SESSION['must_change_password'])) {
 $stats   = leads_stats_summary();
 $recent  = leads_list([], 5, 0);
 
-$blogPublished = function_exists('blog_count') ? blog_count() : 0;
-$blogDrafts    = (int) db()->query('SELECT COUNT(*) FROM blog_posts WHERE status = "draft"')->fetchColumn();
-$teamCount     = function_exists('team_active') ? count(team_active()) : 0;
-$pagesCount    = (int) db()->query('SELECT COUNT(*) FROM pages WHERE is_active = 1')->fetchColumn();
+$blogPublished = 0; $blogDrafts = 0; $teamCount = 0; $pagesCount = 0;
+try { if (function_exists('blog_count')) $blogPublished = (int) blog_count(); } catch (Throwable $e) {}
+try { $blogDrafts = (int) db()->query('SELECT COUNT(*) FROM blog_posts WHERE status = "draft"')->fetchColumn(); } catch (Throwable $e) {}
+try { if (function_exists('team_active')) $teamCount = count(team_active()); } catch (Throwable $e) {}
+try { $pagesCount = (int) db()->query('SELECT COUNT(*) FROM pages WHERE is_active = 1')->fetchColumn(); } catch (Throwable $e) {}
+
+$pendingMigrationsCount = 0;
+try {
+    if (function_exists('migrations_pending')) {
+        $pendingMigrationsCount = count(migrations_pending());
+    }
+} catch (Throwable $e) {}
 
 $pageTitle  = 'Panel';
 $activePage = 'dashboard';
 require __DIR__ . '/partials/header.php';
 ?>
+
+<?php if ($pendingMigrationsCount > 0): ?>
+<a href="/admin/migrations.php" class="block rounded-xl border border-amber-300 bg-amber-50 hover:bg-amber-100 transition-colors p-4">
+  <div class="flex items-center gap-3">
+    <span class="material-symbols-outlined text-amber-700 text-2xl">bolt</span>
+    <div class="flex-1">
+      <p class="text-sm font-bold text-amber-900">
+        <?= (int)$pendingMigrationsCount ?> bekleyen veritabanı güncellemesi var
+      </p>
+      <p class="text-xs text-amber-800 mt-0.5">
+        Yeni özellikleri kullanabilmek için uygulanmaları gerekiyor. Tıkla ve tek tuşla uygula.
+      </p>
+    </div>
+    <span class="material-symbols-outlined text-amber-700">arrow_forward</span>
+  </div>
+</a>
+<?php endif; ?>
 
 <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
   <div class="kpi">

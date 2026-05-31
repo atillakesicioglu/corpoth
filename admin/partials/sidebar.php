@@ -1,6 +1,13 @@
 <?php
 $activePage = $activePage ?? '';
 
+$pendingMigrationsBadge = 0;
+try {
+    if (function_exists('migrations_pending')) {
+        $pendingMigrationsBadge = count(migrations_pending());
+    }
+} catch (Throwable $e) {}
+
 $nav = [
     ['group' => 'Genel', 'items' => [
         ['key' => 'dashboard',    'icon' => 'dashboard',         'label' => 'Panel',          'href' => '/admin/dashboard.php'],
@@ -31,6 +38,15 @@ $nav = [
         ['key' => 'media',        'icon' => 'image',             'label' => 'Medya',             'href' => '/admin/media.php'],
         ['key' => 'account',      'icon' => 'account_circle',    'label' => 'Hesabım',           'href' => '/admin/account.php'],
     ]],
+    ['group' => 'Sistem', 'items' => [
+        [
+            'key'   => 'migrations',
+            'icon'  => 'storage',
+            'label' => 'Veritabanı Güncellemeleri',
+            'href'  => '/admin/migrations.php',
+            'badge' => $pendingMigrationsBadge > 0 ? $pendingMigrationsBadge : null,
+        ],
+    ]],
 ];
 ?>
 <aside id="sidebar" class="w-64 bg-slate-900 text-slate-200 flex-shrink-0 hidden md:flex flex-col">
@@ -52,7 +68,12 @@ $nav = [
         <li>
           <a href="<?= e($item['href']) ?>" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors <?= $cls ?>">
             <span class="material-symbols-outlined text-[20px]"><?= e($item['icon']) ?></span>
-            <?= e($item['label']) ?>
+            <span class="flex-1"><?= e($item['label']) ?></span>
+            <?php if (!empty($item['badge'])): ?>
+              <span class="inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full bg-amber-500 text-white text-[11px] font-bold">
+                <?= (int) $item['badge'] ?>
+              </span>
+            <?php endif; ?>
           </a>
         </li>
         <?php endforeach; ?>
