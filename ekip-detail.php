@@ -62,46 +62,53 @@ require __DIR__ . '/includes/render/head.php';
 <?php require __DIR__ . '/includes/render/nav.php'; ?>
 
 <main id="main" class="pt-20">
-  <section class="page-hero">
-    <div class="page-hero-bg" aria-hidden="true"></div>
-    <div class="max-w-screen-2xl mx-auto px-6 md:px-12 pt-32 md:pt-36 pb-12 md:pb-16 relative">
-      <?php $breadcrumbs = $page_breadcrumb; require __DIR__ . '/includes/render/breadcrumb.php'; ?>
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-start mt-8">
-        <div class="md:col-span-4 lg:col-span-3" data-animate="fade-up">
-          <div class="rounded-xl overflow-hidden editorial-shadow aspect-[4/5] bg-surface-container-high">
-            <?php if (!empty($member['photo'])): ?>
-              <img src="<?= e($member['photo']) ?>" alt="<?= e($member['full_name']) ?>" class="w-full h-full object-cover"/>
-            <?php else: ?>
-              <div class="w-full h-full flex items-center justify-center text-primary/30">
-                <span class="material-symbols-outlined" style="font-size:7rem">person</span>
-              </div>
-            <?php endif; ?>
-          </div>
-          <div class="mt-5 flex flex-wrap gap-3">
-            <?php if (!empty($member['linkedin'])): ?>
-            <a href="<?= e($member['linkedin']) ?>" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-on-primary text-sm font-semibold hover:-translate-y-0.5 transition-transform">
-              <span class="material-symbols-outlined text-base">work</span> LinkedIn
-            </a>
-            <?php endif; ?>
-            <?php if (!empty($member['email'])): ?>
-            <a href="mailto:<?= e($member['email']) ?>" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-high text-on-surface text-sm font-semibold hover:-translate-y-0.5 transition-transform">
-              <span class="material-symbols-outlined text-base">mail</span> E-posta
-            </a>
-            <?php endif; ?>
-          </div>
-        </div>
-        <div class="md:col-span-8 lg:col-span-9" data-animate="fade-up" data-animate-delay="100">
-          <span class="text-primary font-label uppercase tracking-[0.2em] text-xs font-bold mb-2 block"><?= e($member['title'] ?? 'Ekip Üyesi') ?></span>
-          <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-5"><?= e($member['full_name']) ?></h1>
-          <?php if (!empty($member['bio'])): ?>
-          <p class="text-lg text-secondary leading-relaxed mb-8"><?= e($member['bio']) ?></p>
-          <?php endif; ?>
-          <?php if (!empty($member['bio_long'])): ?>
-          <article class="blog-prose">
-            <?= safe_html($member['bio_long']) ?>
-          </article>
+  <?php
+  $hero_eyebrow  = $member['title'] ?? 'Ekip Üyesi';
+  $hero_title    = $member['full_name'];
+  $hero_subtitle = !empty($member['bio_long']) ? '' : ($member['bio'] ?? '');
+  if ($hero_subtitle === '' && !empty($member['bio'])) {
+      $hero_subtitle = str_excerpt($member['bio'], 160);
+  }
+  $breadcrumbs   = $page_breadcrumb;
+  require __DIR__ . '/includes/render/page_hero.php';
+  ?>
+
+  <section class="team-detail-content py-12 md:py-16 px-6 md:px-12 bg-surface">
+    <div class="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-start">
+      <div class="md:col-span-4 lg:col-span-3">
+        <div class="rounded-xl overflow-hidden editorial-shadow aspect-[4/5] bg-surface-container-high">
+          <?php if (!empty($member['photo'])): ?>
+            <img src="<?= e($member['photo']) ?>" alt="<?= e($member['full_name']) ?>" class="w-full h-full object-cover"/>
+          <?php else: ?>
+            <div class="w-full h-full flex items-center justify-center text-primary/30">
+              <span class="material-symbols-outlined" style="font-size:7rem">person</span>
+            </div>
           <?php endif; ?>
         </div>
+        <div class="mt-5 flex flex-wrap gap-3">
+          <?php if (!empty($member['linkedin'])): ?>
+          <a href="<?= e($member['linkedin']) ?>" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-on-primary text-sm font-semibold hover:-translate-y-0.5 transition-transform">
+            <span class="material-symbols-outlined text-base">work</span> LinkedIn
+          </a>
+          <?php endif; ?>
+          <?php if (!empty($member['email'])): ?>
+          <a href="mailto:<?= e($member['email']) ?>" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-high text-on-surface text-sm font-semibold hover:-translate-y-0.5 transition-transform">
+            <span class="material-symbols-outlined text-base">mail</span> E-posta
+          </a>
+          <?php endif; ?>
+        </div>
+      </div>
+      <div class="md:col-span-8 lg:col-span-9">
+        <?php if (!empty($member['bio']) && !empty($member['bio_long'])): ?>
+        <p class="text-lg text-secondary leading-relaxed mb-8"><?= e($member['bio']) ?></p>
+        <?php endif; ?>
+        <?php if (!empty($member['bio_long'])): ?>
+        <article class="blog-prose">
+          <?= safe_html($member['bio_long']) ?>
+        </article>
+        <?php elseif (!empty($member['bio'])): ?>
+        <p class="text-lg text-secondary leading-relaxed"><?= e($member['bio']) ?></p>
+        <?php endif; ?>
       </div>
     </div>
   </section>

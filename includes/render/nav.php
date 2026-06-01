@@ -49,7 +49,7 @@ $isActive = function ($item) use ($current) {
 <nav id="site-nav" class="fixed top-0 w-full z-50 bg-white/85 backdrop-blur-xl border-b border-outline-variant/10" aria-label="Ana navigasyon">
   <div class="flex justify-between items-center gap-4 px-6 md:px-12 w-full max-w-screen-2xl mx-auto h-20">
     <a href="/" class="shrink-0 flex items-center group" aria-label="Corpoth Anasayfa">
-      <img src="/assets/images/corpoth-logo.png" alt="CORPOTH" class="h-12 md:h-14 w-auto transition-transform duration-300 group-hover:scale-105" />
+      <img src="/assets/images/corpoth-logo.png" alt="CORPOTH" class="site-logo h-14 md:h-[4.25rem] w-auto transition-transform duration-300 group-hover:scale-105" />
     </a>
 
     <div class="hidden md:flex items-center gap-x-1 font-sans text-sm font-medium tracking-wide">
@@ -85,8 +85,12 @@ $isActive = function ($item) use ($current) {
 
     <div class="flex items-center gap-2 shrink-0">
       <a href="/iletisim.php#form" class="hidden md:inline-flex primary-gradient text-white px-5 py-2.5 rounded-xl font-label text-sm uppercase tracking-wider font-semibold shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 no-underline">Teklif Al</a>
-      <button type="button" id="nav-toggle" class="md:hidden inline-flex items-center justify-center rounded-xl border border-outline-variant/30 bg-surface-container-lowest p-2.5 text-on-surface hover:bg-surface-container transition-colors relative z-[110]" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menüyü aç">
-        <span class="material-symbols-outlined text-2xl" id="nav-toggle-icon">menu</span>
+      <button type="button" id="nav-toggle" class="nav-toggle md:hidden" aria-expanded="false" aria-controls="mobile-menu" aria-label="Menüyü aç">
+        <span class="nav-toggle-box" aria-hidden="true">
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+          <span class="nav-toggle-bar"></span>
+        </span>
       </button>
     </div>
   </div>
@@ -95,29 +99,26 @@ $isActive = function ($item) use ($current) {
 <!-- Tam ekran mobil overlay menu (accordion alt menulerle) -->
 <div id="mobile-menu" class="md:hidden" aria-hidden="true">
   <div class="mobile-menu-bg"></div>
-  <button type="button" id="mobile-close" class="mobile-menu-close" aria-label="Menüyü kapat">
-    <span class="material-symbols-outlined">close</span>
-  </button>
   <nav class="mobile-menu-inner" aria-label="Mobil navigasyon">
     <a href="/" class="mobile-logo" aria-label="Corpoth Anasayfa">
-      <img src="/assets/images/corpoth-logo.png" alt="CORPOTH" class="h-14 w-auto"/>
+      <img src="/assets/images/corpoth-logo.png" alt="CORPOTH" class="site-logo h-16 w-auto"/>
     </a>
     <ul class="mobile-menu-list">
       <?php foreach ($navItems as $item): ?>
         <?php if ($item['type'] === 'link'): ?>
           <li>
-            <a href="<?= e($item['href']) ?>"><?= e($item['label']) ?><span class="material-symbols-outlined">arrow_forward</span></a>
+            <a href="<?= e($item['href']) ?>" class="<?= $item['key'] === $current ? 'is-current' : '' ?>"><?= e($item['label']) ?></a>
           </li>
         <?php else: ?>
           <li class="mobile-acc<?= $isActive($item) ? ' is-open' : '' ?>" data-mobile-acc>
             <button type="button" class="mobile-acc-head">
-              <?= e($item['label']) ?>
+              <span class="mobile-acc-label"><?= e($item['label']) ?></span>
               <span class="material-symbols-outlined mobile-acc-chev">expand_more</span>
             </button>
             <ul class="mobile-acc-body">
               <?php foreach ($item['items'] as $sub): ?>
                 <li>
-                  <a href="<?= e($sub['href']) ?>" class="mobile-acc-item">
+                  <a href="<?= e($sub['href']) ?>" class="mobile-acc-item<?= $sub['key'] === $current ? ' is-current' : '' ?>">
                     <span class="material-symbols-outlined"><?= e($sub['icon']) ?></span>
                     <span><?= e($sub['label']) ?></span>
                   </a>

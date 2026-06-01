@@ -49,30 +49,48 @@
 
   /* ========== Mobil tam ekran menu ========== */
   const navToggle  = document.getElementById('nav-toggle');
-  const navIcon    = document.getElementById('nav-toggle-icon');
   const mobileMenu = document.getElementById('mobile-menu');
-  const mobileClose = document.getElementById('mobile-close');
+  const MOBILE_MENU_CLOSE_MS = 340;
+  let mobileMenuClosing = false;
 
   const setMobileMenu = (open) => {
-    if (!mobileMenu) return;
-    mobileMenu.classList.toggle('is-open', open);
-    mobileMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
-    document.body.classList.toggle('mobile-menu-open', open);
-    if (navToggle) {
-      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-      navToggle.setAttribute('aria-label', open ? 'Menüyü kapat' : 'Menüyü aç');
+    if (!mobileMenu || mobileMenuClosing) return;
+
+    const isOpen = mobileMenu.classList.contains('is-open');
+    if (open === isOpen) return;
+
+    if (!open) {
+      mobileMenuClosing = true;
+      mobileMenu.classList.add('is-closing');
+      if (navToggle) {
+        navToggle.classList.remove('is-active');
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.setAttribute('aria-label', 'Menüyü aç');
+      }
+      window.setTimeout(() => {
+        mobileMenu.classList.remove('is-open', 'is-closing');
+        mobileMenu.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('mobile-menu-open');
+        mobileMenuClosing = false;
+      }, MOBILE_MENU_CLOSE_MS);
+      return;
     }
-    if (navIcon) navIcon.textContent = open ? 'close' : 'menu';
+
+    mobileMenu.classList.remove('is-closing');
+    mobileMenu.classList.add('is-open');
+    mobileMenu.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('mobile-menu-open');
+    if (navToggle) {
+      navToggle.classList.add('is-active');
+      navToggle.setAttribute('aria-expanded', 'true');
+      navToggle.setAttribute('aria-label', 'Menüyü kapat');
+    }
   };
 
   if (navToggle && mobileMenu) {
     navToggle.addEventListener('click', () => {
       setMobileMenu(!mobileMenu.classList.contains('is-open'));
     });
-
-    if (mobileClose) {
-      mobileClose.addEventListener('click', () => setMobileMenu(false));
-    }
 
     // Mobil accordion (alt menuler)
     mobileMenu.querySelectorAll('[data-mobile-acc]').forEach((acc) => {
@@ -85,12 +103,9 @@
     });
 
     // Sadece anchor link / sub-item link tiklamasinda menuyu kapat
-    // (accordion head'lere dokunmuyoruz)
     mobileMenu.querySelectorAll('a').forEach((el) => {
       el.addEventListener('click', () => setMobileMenu(false));
     });
-    const closeBtn = mobileMenu.querySelector('#mobile-close');
-    if (closeBtn) closeBtn.addEventListener('click', () => setMobileMenu(false));
 
     // ESC ile kapat
     document.addEventListener('keydown', (e) => {

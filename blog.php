@@ -44,8 +44,8 @@ require __DIR__ . '/includes/render/head.php';
 
   <!-- Kategori filtre seridi -->
   <?php if ($cats): ?>
-  <section class="px-6 md:px-12">
-    <div class="max-w-screen-2xl mx-auto -mt-2">
+  <section class="blog-filters-bar px-6 md:px-12">
+    <div class="max-w-screen-2xl mx-auto">
       <div class="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1">
         <a href="/blog.php" class="shrink-0 px-4 py-2 rounded-full text-sm font-medium border <?= !$cat ? 'bg-primary text-on-primary border-primary' : 'bg-white border-outline-variant/30 text-on-surface hover:border-primary/40' ?>">Tümü</a>
         <?php foreach ($cats as $c): ?>
