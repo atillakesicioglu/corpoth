@@ -251,7 +251,13 @@ body.mobile-menu-open { overflow: hidden; }
   letter-spacing: inherit;
   transition: color .25s ease;
 }
-.nav-link::after {
+.nav-link:hover { color: #002555; }
+.nav-link-active {
+  color: #002555;
+  font-weight: 600;
+}
+/* Alt cizgi yalnizca aktif sayfada (inactive linklerde ::after yok) */
+.nav-link-active::after {
   content: '';
   position: absolute;
   left: .75rem;
@@ -259,16 +265,8 @@ body.mobile-menu-open { overflow: hidden; }
   bottom: .25rem;
   height: 2px;
   background: #002555;
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform .35s cubic-bezier(.22, .61, .36, 1);
+  border-radius: 1px;
 }
-.nav-link:hover { color: #002555; }
-.nav-link-active {
-  color: #002555;
-  font-weight: 600;
-}
-.nav-link-active::after { transform: scaleX(1); }
 
 /* Dropdown */
 .nav-dropdown { position: relative; }
@@ -899,7 +897,6 @@ article.blog-prose pre code { background: transparent; padding: 0; }
   #mobile-menu *,
   #lead-form-status,
   .nav-link,
-  .nav-link::after,
   .footer-link,
   .footer-link .footer-icon,
   .ref-logo-pill,
