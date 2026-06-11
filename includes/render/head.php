@@ -17,7 +17,7 @@ $ogImage      = $page_og_image ?? setting('og_image', '/assets/images/cover.png'
 $ogImageAbs   = (preg_match('#^https?://#', $ogImage)) ? $ogImage : rtrim(setting('canonical_url', ''), '/') . $ogImage;
 $titleTag     = $page_title ?? $siteTitle;
 $descTag      = $page_description ?? $siteDesc;
-$gaId         = trim(setting('ga_id'));
+$gaId         = trim(setting('ga_id')) ?: 'G-MMYN1054NB';
 $clarityId    = trim(setting('clarity_id'));
 $contactPhone = setting('contact_phone');
 $contactEmail = setting('contact_email');
@@ -25,6 +25,17 @@ $contactEmail = setting('contact_email');
 <!DOCTYPE html>
 <html class="scroll-smooth no-js" lang="tr">
 <head>
+<?php if ($gaId): ?>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($gaId) ?>"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '<?= e($gaId) ?>');
+</script>
+<?php endif; ?>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title><?= e($titleTag) ?></title>
@@ -240,17 +251,6 @@ if (!empty($include_faq_schema) && function_exists('faq_active')) {
 }
 ?>
 <script type="application/ld+json"><?= json_encode($jsonLd, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?></script>
-
-<?php if ($gaId): ?>
-<!-- Google Analytics 4 -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($gaId) ?>"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', '<?= e($gaId) ?>');
-</script>
-<?php endif; ?>
 
 <?php if ($clarityId): ?>
 <!-- Microsoft Clarity -->
